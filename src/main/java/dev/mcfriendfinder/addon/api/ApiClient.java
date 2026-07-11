@@ -1,0 +1,86 @@
+package dev.mcfriendfinder.addon.api;
+
+import com.google.gson.Gson;
+import dev.mcfriendfinder.addon.ServerFinderAddon;
+import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
+
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static meteordevelopment.meteorclient.MeteorClient.mc;
+
+/**
+ * A tiny HTTP client for talking to a self-hosted MC Friend Finder API
+ * instance (see {@code scanner/api} in the repo root). Every call runs on
+ * {@link MeteorExecutor}'s background thread pool - never on the render
+ * thread - and hands results back via {@code mc.execute(...)} so callbacks
+ * are always safe to touch game/GUI state from.
+ */
+public class ApiClient {
+    private static final Gson GSON = new Gson();
+    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
+        .connectTimeout(Duration.ofSeconds(5))
+        .build();
+
+    public void listServers(
+        String baseUrl,
+        String apiKey,
+        SearchFilters filters,
+        Consumer<ServerListResponse> onSuccess,
+        Consumer<Throwable> onError
+    ) {
+        MeteorExecutor.execute(() -> {
+            try {
+                URI uri = buildServersUri(baseUrl, filters);
+                HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(uri)
+                    .timeout(Duration.ofSeconds(10))
+                    .GET();
+
+                if (apiKey != null && !apiKey.isBlank()) {
+                    requestBuilder.header("X-API-Key", apiKey);
+                }
+
+                HttpResponse<String> response = HTTP_CLIENT.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() != 200) {
+                    throw new RuntimeException("API returned HTTP " + response.statusCode() + ": " + response.body());
+                }
+
+                ServerListResponse parsed = GSON.fromJson(response.body(), ServerListResponse.class);
+                if (parsed.servers == null) parsed.servers = List.of();
+
+                mc.execute(() -> onSuccess.accept(parsed));
+            } catch (Exception e) {
+                ServerFinderAddon.LOG.warn("Failed to fetch server list from {}", baseUrl, e);
+                mc.execute(() -> onError.accept(e));
+            }
+        });
+    }
+
+    private URI buildServersUri(String baseUrl, SearchFilters filters) {
+        String base = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
+        StringBuilder query = new StringBuilder();
+
+        appendParam(query, "limit", Long.toString(filters.limit));
+        appendParam(query, "offset", Long.toString(filters.offset));
+        if (filters.versionName != null && !filters.versionName.isBlank()) appendParam(query, "version_name", filters.versionName);
+        if (filters.minPlayers != null) appendParam(query, "min_players", Integer.toString(filters.minPlayers));
+        if (filters.maxPlayers != null) appendParam(query, "max_players", Integer.toString(filters.maxPlayers));
+        if (filters.cracked != null) appendParam(query, "cracked", filters.cracked.toString());
+        if (filters.motdContains != null && !filters.motdContains.isBlank()) appendParam(query, "motd_contains", filters.motdContains);
+
+        return URI.create(base + "/api/v1/servers?" + query);
+    }
+
+    private void appendParam(StringBuilder query, String key, String value) {
+        if (!query.isEmpty()) query.append('&');
+        query.append(key).append('=').append(URLEncoder.encode(value, StandardCharsets.UTF_8));
+    }
+}
