@@ -3,8 +3,14 @@
 A [Meteor Client](https://meteorclient.com/) addon, scaffolded from
 [meteor-addon-template](https://github.com/MeteorDevelopment/meteor-addon-template),
 that adds a **Server Finder** module for browsing servers indexed by a
-self-hosted [`scanner`/`api`](../scanner) instance and joining them from the
+self-hosted MC Friend Finder scanner/API instance and joining them from the
 vanilla Multiplayer menu.
+
+This repo contains only the client-side addon. It talks to a companion
+scanner + REST API (a self-hosted service that finds and indexes Minecraft
+servers) over HTTP - it doesn't ship or require any specific hosted backend.
+You'll need the base URL (and optionally an API key) of an instance someone
+is running for you, or to self-host that backend yourself.
 
 ## Layout
 
@@ -40,10 +46,9 @@ Client and this addon loaded.
 ## Using it
 
 1. Enable the **Server Finder** module (category **Friend Finder**) and set
-   **API Base URL** to a running `mc-scanner-api` instance, e.g.
-   `http://your-server:8080` (see [`../scanner/README.md`](../scanner/README.md)).
-   If that instance was started with `[api].api_key` set, also fill in
-   **API Key**.
+   **API Base URL** to a running MC Friend Finder API instance, e.g.
+   `http://your-server:8080`. If that instance requires an API key, also
+   fill in **API Key**.
 2. Open the browser either via the module's "Open Server Finder" button, the
    new **Find Servers** button on the vanilla Multiplayer screen, or the
    `;server-finder` (alias `;sf`) chat command.

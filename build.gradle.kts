@@ -60,7 +60,7 @@ tasks {
     jar {
         inputs.property("archivesName", project.base.archivesName.get())
 
-        from("../LICENSE") {
+        from("LICENSE") {
             rename { "${it}_${inputs.properties["archivesName"]}" }
         }
     }
