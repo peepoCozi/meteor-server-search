@@ -65,7 +65,7 @@ public class ApiClient {
     }
 
     private URI buildServersUri(String baseUrl, SearchFilters filters) {
-        String base = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
+        String base = normalizeBaseUrl(baseUrl);
         StringBuilder query = new StringBuilder();
 
         appendParam(query, "limit", Long.toString(filters.limit));
@@ -77,6 +77,21 @@ public class ApiClient {
         if (filters.motdContains != null && !filters.motdContains.isBlank()) appendParam(query, "motd_contains", filters.motdContains);
 
         return URI.create(base + "/api/v1/servers?" + query);
+    }
+
+    /**
+     * {@link HttpRequest} requires an absolute URI with an explicit scheme
+     * and throws a cryptic {@code IllegalArgumentException: URI with
+     * undefined scheme} otherwise. Users very naturally type just
+     * {@code host:port} into the API Base URL setting (omitting {@code
+     * http://}), so default to that instead of surfacing that exception.
+     */
+    private String normalizeBaseUrl(String baseUrl) {
+        String trimmed = baseUrl.strip();
+        if (!trimmed.matches("(?i)^[a-z][a-z0-9+.-]*://.*")) {
+            trimmed = "http://" + trimmed;
+        }
+        return trimmed.endsWith("/") ? trimmed.substring(0, trimmed.length() - 1) : trimmed;
     }
 
     private void appendParam(StringBuilder query, String key, String value) {
