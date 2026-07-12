@@ -16,7 +16,7 @@ public class ServerFinderAddon extends MeteorAddon {
 
     @Override
     public void onInitialize() {
-        LOG.info("Initializing MC Friend Finder");
+        LOG.info("Initializing Meteor Server Search");
 
         Modules.get().add(new ServerFinderModule());
         Commands.add(new ServerFinderCommand());
@@ -34,7 +34,6 @@ public class ServerFinderAddon extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        // TODO: update to your actual fork/repo once published.
-        return new GithubRepo("YOUR_USERNAME", "MC-Friend-Finder");
+        return new GithubRepo("peepoCozi", "meteor-server-search");
     }
 }

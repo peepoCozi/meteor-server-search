@@ -13,4 +13,4 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = "mc-friend-finder-addon"
+rootProject.name = "meteor-server-search"

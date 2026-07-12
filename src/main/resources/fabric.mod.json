@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "mc-friend-finder",
+  "id": "meteor-server-search",
   "version": "${version}",
-  "name": "MC Friend Finder",
-  "description": "Browse Minecraft servers found by your own self-hosted scanner, and add them to your Multiplayer server list or connect directly. Not affiliated with, and does not depend on, any third-party ServerSeeker service.",
+  "name": "Meteor Server Search",
+  "description": "A Meteor Client addon that allows users to browse servers indexed by my personal server scanner database which is still currently in private developement.",
   "authors": [
-    "MC Friend Finder Contributors"
+    "peepoCozi"
   ],
   "contact": {
-    "sources": "https://github.com/YOUR_USERNAME/MC-Friend-Finder"
+    "sources": "https://github.com/peepoCozi/meteor-server-search"
   },
   "license": "AGPL-3.0-or-later",
   "icon": "assets/mcfriendfinder/icon.png",
