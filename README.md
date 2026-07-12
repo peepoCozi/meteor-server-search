@@ -4,6 +4,12 @@ A [Meteor Client](https://meteorclient.com/) addon that allows users to browse s
 
 This repo contains only the client-side addon. It talks to a companion scanner + REST API and it doesn't ship or require any specific hosted backend. You'll need the base URL (and optionally an API key) of an instance someone is running for you, or to self-host that backend yourself.
 
+## Download
+
+Grab the latest built jar from the [Releases page](../../releases/latest) -
+every push to `main` automatically builds and publishes it there, no manual
+build required.
+
 ## Usage
 
 1. Enable the **Server Finder** module (category **Friend Finder**) and set
