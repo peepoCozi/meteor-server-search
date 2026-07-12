@@ -35,10 +35,10 @@ jobs:
           version=$(grep '^mod-version' gradle/libs.versions.toml | sed -E 's/.*"(.*)".*/\1/')
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Publish release
+      - name: Draft release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: v${{ steps.version.outputs.version }}
-          make_latest: true
+          draft: true
           files: build/libs/*.jar
