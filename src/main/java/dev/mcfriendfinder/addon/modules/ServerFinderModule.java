@@ -4,6 +4,8 @@ import dev.mcfriendfinder.addon.ServerFinderAddon;
 import dev.mcfriendfinder.addon.api.CrackedFilter;
 import dev.mcfriendfinder.addon.api.ServerTypeFilter;
 import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
+import meteordevelopment.meteorclient.MeteorClient;
+import meteordevelopment.meteorclient.events.world.ServerConnectEndEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
@@ -15,7 +17,9 @@ import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.settings.StringListSetting;
 import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.orbit.EventHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
@@ -107,17 +111,21 @@ public class ServerFinderModule extends Module {
 
     public final Setting<Boolean> hideJoinedServers = sgFilters.add(new BoolSetting.Builder()
         .name("hide-joined-servers")
-        .description("Hide servers you've already connected to via this addon's Connect button.")
+        .description("Hide servers you've already connected to, however you connected to them.")
         .defaultValue(false)
         .build()
     );
 
     /**
-     * Address:port of every server connected to via {@link ServerFinderScreen}'s
-     * Connect button, used by {@link #hideJoinedServers}. Not a user-facing
-     * setting - hidden via {@code visible(() -> false)} - but piggybacking on
-     * the Setting system means it's saved/loaded automatically along with
-     * everything else instead of needing custom persistence code.
+     * Address:port of every server the client has connected to, used by
+     * {@link #hideJoinedServers}. Populated from {@link ServerConnectEndEvent}
+     * (see {@link #onServerConnectEnd}) so it covers every way of joining a
+     * server - this screen's Connect button, double-clicking a vanilla
+     * Multiplayer list entry, or the direct-connect screen - not just this
+     * addon's own UI. Not a user-facing setting - hidden via
+     * {@code visible(() -> false)} - but piggybacking on the Setting system
+     * means it's saved/loaded automatically along with everything else
+     * instead of needing custom persistence code.
      */
     public final Setting<List<String>> joinedServers = sgFilters.add(new StringListSetting.Builder()
         .name("joined-servers")
@@ -129,6 +137,27 @@ public class ServerFinderModule extends Module {
 
     public ServerFinderModule() {
         super(ServerFinderAddon.CATEGORY, "server-finder", "Browse servers found by your self-hosted scanner and add them to your server list.");
+
+        // Subscribed unconditionally (rather than relying on Module's
+        // built-in autoSubscribe, which only listens while the module is
+        // toggled on) since this module has no on/off behaviour of its own -
+        // it's just a GUI launcher - but hide-joined-servers bookkeeping
+        // should still work regardless.
+        MeteorClient.EVENT_BUS.subscribe(this);
+    }
+
+    @EventHandler
+    private void onServerConnectEnd(ServerConnectEndEvent event) {
+        markJoined(event.address.getHostString() + ":" + event.address.getPort());
+    }
+
+    public void markJoined(String hostAndPort) {
+        List<String> joined = joinedServers.get();
+        if (joined.contains(hostAndPort)) return;
+
+        List<String> updated = new ArrayList<>(joined);
+        updated.add(hostAndPort);
+        joinedServers.set(updated);
     }
 
     @Override

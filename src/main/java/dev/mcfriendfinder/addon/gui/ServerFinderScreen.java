@@ -104,7 +104,7 @@ public class ServerFinderScreen extends WindowScreen {
         moreControls.add(theme.label("Hide joined"));
 
         WButton clearHistory = moreControls.add(theme.button("Clear Joined History")).widget();
-        clearHistory.tooltip = "Forget every server you've connected to via this addon's Connect button";
+        clearHistory.tooltip = "Forget every server you've connected to";
         clearHistory.action = () -> {
             module.joinedServers.set(new ArrayList<>());
             resetAndSearch();
@@ -249,28 +249,15 @@ public class ServerFinderScreen extends WindowScreen {
             ServerAddress address = ServerAddress.parseString(hostAndPort);
             ServerData serverData = new ServerData(hostAndPort, hostAndPort, ServerData.Type.OTHER);
 
-            markJoined(hostAndPort);
+            // No need to record "joined" bookkeeping here - the module
+            // listens for ServerConnectEndEvent itself, which fires for
+            // every successful connection regardless of how it was started.
             onClose();
             ConnectScreen.startConnecting(this, mc, address, serverData, false, null);
         } catch (Exception e) {
             ServerFinderAddon.LOG.error("Failed to connect to {}", hostAndPort, e);
             statusLabel.set("Failed to connect: " + e.getMessage());
         }
-    }
-
-    /**
-     * Records a server as "joined" for {@code hide-joined-servers}. Only
-     * covers connections made through this screen's Connect button - there's
-     * no way to know about joins made by double-clicking a vanilla
-     * Multiplayer list entry or using the direct-connect screen.
-     */
-    private void markJoined(String hostAndPort) {
-        List<String> joined = module.joinedServers.get();
-        if (joined.contains(hostAndPort)) return;
-
-        List<String> updated = new ArrayList<>(joined);
-        updated.add(hostAndPort);
-        module.joinedServers.set(updated);
     }
 
     private String formatSoftware(String software) {
