@@ -16,6 +16,9 @@ public class FoundServer {
     @SerializedName("version_protocol")
     public int versionProtocol;
 
+    /** Best-effort software classification derived from versionName, e.g. "paper". */
+    public String software;
+
     public boolean cracked;
 
     @SerializedName("max_players")

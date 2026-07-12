@@ -2,18 +2,20 @@ package dev.mcfriendfinder.addon.gui;
 
 import dev.mcfriendfinder.addon.ServerFinderAddon;
 import dev.mcfriendfinder.addon.api.ApiClient;
+import dev.mcfriendfinder.addon.api.CrackedFilter;
 import dev.mcfriendfinder.addon.api.FoundServer;
 import dev.mcfriendfinder.addon.api.SearchFilters;
 import dev.mcfriendfinder.addon.api.ServerListResponse;
+import dev.mcfriendfinder.addon.api.ServerTypeFilter;
 import dev.mcfriendfinder.addon.modules.ServerFinderModule;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
+import meteordevelopment.meteorclient.gui.widgets.input.WDropdown;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
-import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
@@ -35,7 +37,8 @@ public class ServerFinderScreen extends WindowScreen {
     private WLabel statusLabel;
     private WTable table;
     private WTextBox motdBox;
-    private WCheckbox crackedBox;
+    private WDropdown<CrackedFilter> crackedDropdown;
+    private WDropdown<ServerTypeFilter> serverTypeDropdown;
 
     private long offset = 0;
     private boolean loading = false;
@@ -60,8 +63,11 @@ public class ServerFinderScreen extends WindowScreen {
         motdBox = controls.add(theme.textBox(module.motdContains.get(), "Search MOTD...")).expandX().minWidth(200d).widget();
         motdBox.action = this::resetAndSearch;
 
-        crackedBox = controls.add(theme.checkbox(module.crackedOnly.get())).widget();
-        controls.add(theme.label("Cracked only"));
+        crackedDropdown = controls.add(theme.dropdown(module.crackedFilter.get())).widget();
+        crackedDropdown.action = this::resetAndSearch;
+
+        serverTypeDropdown = controls.add(theme.dropdown(module.serverTypeFilter.get())).widget();
+        serverTypeDropdown.action = this::resetAndSearch;
 
         WButton search = controls.add(theme.button("Search")).widget();
         search.action = this::resetAndSearch;
@@ -103,8 +109,9 @@ public class ServerFinderScreen extends WindowScreen {
         filters.versionName = blankToNull(module.versionFilter.get());
         filters.minPlayers = module.minPlayers.get() > 0 ? module.minPlayers.get() : null;
         filters.maxPlayers = module.maxPlayers.get() > 0 ? module.maxPlayers.get() : null;
-        filters.cracked = crackedBox.checked ? Boolean.TRUE : null;
+        filters.cracked = crackedDropdown.get().toApiValue();
         filters.motdContains = blankToNull(motdBox.get());
+        filters.serverType = serverTypeDropdown.get().toApiValue();
         filters.limit = module.pageSize.get();
         filters.offset = offset;
 
@@ -141,6 +148,7 @@ public class ServerFinderScreen extends WindowScreen {
     private void addRow(FoundServer server) {
         table.add(theme.label(server.hostAndPort())).widget();
         table.add(theme.label(server.versionName == null ? "?" : server.versionName)).widget();
+        table.add(theme.label(formatSoftware(server.software))).widget();
         table.add(theme.label(formatPlayers(server))).widget();
         table.add(theme.label(server.cracked ? "Cracked" : "Online")).widget();
         table.add(theme.label(formatMotd(server.motd))).expandCellX().widget();
@@ -192,6 +200,15 @@ public class ServerFinderScreen extends WindowScreen {
             ServerFinderAddon.LOG.error("Failed to connect to {}", hostAndPort, e);
             statusLabel.set("Failed to connect: " + e.getMessage());
         }
+    }
+
+    private String formatSoftware(String software) {
+        if (software == null || software.isBlank() || software.equals("other")) return "?";
+        return switch (software) {
+            case "neoforge" -> "NeoForge";
+            case "bungeecord" -> "BungeeCord";
+            default -> software.substring(0, 1).toUpperCase() + software.substring(1);
+        };
     }
 
     private String formatPlayers(FoundServer server) {

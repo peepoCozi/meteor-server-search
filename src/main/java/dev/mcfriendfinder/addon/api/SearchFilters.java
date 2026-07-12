@@ -11,6 +11,8 @@ public class SearchFilters {
     public Integer maxPlayers;
     public Boolean cracked;
     public String motdContains;
+    /** One of {@code ServerTypeFilter}'s API values (e.g. "paper"), or null for any. */
+    public String serverType;
     public long limit = 50;
     public long offset = 0;
 }

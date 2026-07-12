@@ -75,6 +75,7 @@ public class ApiClient {
         if (filters.maxPlayers != null) appendParam(query, "max_players", Integer.toString(filters.maxPlayers));
         if (filters.cracked != null) appendParam(query, "cracked", filters.cracked.toString());
         if (filters.motdContains != null && !filters.motdContains.isBlank()) appendParam(query, "motd_contains", filters.motdContains);
+        if (filters.serverType != null && !filters.serverType.isBlank()) appendParam(query, "server_type", filters.serverType);
 
         return URI.create(base + "/api/v1/servers?" + query);
     }

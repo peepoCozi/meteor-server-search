@@ -1,11 +1,13 @@
 package dev.mcfriendfinder.addon.modules;
 
 import dev.mcfriendfinder.addon.ServerFinderAddon;
+import dev.mcfriendfinder.addon.api.CrackedFilter;
+import dev.mcfriendfinder.addon.api.ServerTypeFilter;
 import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
-import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -68,10 +70,17 @@ public class ServerFinderModule extends Module {
         .build()
     );
 
-    public final Setting<Boolean> crackedOnly = sgFilters.add(new BoolSetting.Builder()
-        .name("cracked-only")
-        .description("Only show offline-mode (\"cracked\") servers.")
-        .defaultValue(false)
+    public final Setting<CrackedFilter> crackedFilter = sgFilters.add(new EnumSetting.Builder<CrackedFilter>()
+        .name("cracked-filter")
+        .description("Filter servers by online-mode status.")
+        .defaultValue(CrackedFilter.ANY)
+        .build()
+    );
+
+    public final Setting<ServerTypeFilter> serverTypeFilter = sgFilters.add(new EnumSetting.Builder<ServerTypeFilter>()
+        .name("server-type")
+        .description("Only show servers detected as running this software (based on their reported version name).")
+        .defaultValue(ServerTypeFilter.ANY)
         .build()
     );
 
