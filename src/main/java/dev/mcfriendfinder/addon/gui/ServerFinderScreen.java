@@ -17,7 +17,6 @@ import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
-import net.minecraft.client.multiplayer.TransferState;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
@@ -176,16 +175,19 @@ public class ServerFinderScreen extends WindowScreen {
         String hostAndPort = server.hostAndPort();
 
         try {
-            // NOTE: ConnectScreen.connect(Minecraft, ServerAddress, ServerData, TransferState)
-            // and TransferState.NONE are inferred from meteor-client's own ConnectScreenMixin
-            // (see mixin/ConnectScreenMixin.java in the meteor-client source) rather than
-            // hand-verified against compiled game code. Double check this against the exact
-            // pinned Minecraft/Meteor version if it fails to compile.
+            // Verified against the actual net.minecraft.client.gui.screens.ConnectScreen
+            // class for this Minecraft version (26.1.2 / Yarn 1.21.11+build.3) via javap:
+            // ConnectScreen.connect(...) is a private instance method, not a usable public
+            // API. The real public entry point - and what vanilla's JoinMultiplayerScreen
+            // itself calls when connecting to a server list entry - is the static
+            // startConnecting(Screen, Minecraft, ServerAddress, ServerData, boolean,
+            // @Nullable TransferState) method, passing false/null for the last two params
+            // for a normal (non-transfer) connection.
             ServerAddress address = ServerAddress.parseString(hostAndPort);
             ServerData serverData = new ServerData(hostAndPort, hostAndPort, ServerData.Type.OTHER);
 
             onClose();
-            ConnectScreen.connect(mc, address, serverData, TransferState.NONE);
+            ConnectScreen.startConnecting(this, mc, address, serverData, false, null);
         } catch (Exception e) {
             ServerFinderAddon.LOG.error("Failed to connect to {}", hostAndPort, e);
             statusLabel.set("Failed to connect: " + e.getMessage());
