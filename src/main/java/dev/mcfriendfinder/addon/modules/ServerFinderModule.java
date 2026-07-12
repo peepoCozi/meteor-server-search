@@ -7,12 +7,16 @@ import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
+import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.StringListSetting;
 import meteordevelopment.meteorclient.settings.StringSetting;
 import meteordevelopment.meteorclient.systems.modules.Module;
+
+import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -98,6 +102,28 @@ public class ServerFinderModule extends Module {
         .min(1)
         .max(200)
         .sliderMax(200)
+        .build()
+    );
+
+    public final Setting<Boolean> hideJoinedServers = sgFilters.add(new BoolSetting.Builder()
+        .name("hide-joined-servers")
+        .description("Hide servers you've already connected to via this addon's Connect button.")
+        .defaultValue(false)
+        .build()
+    );
+
+    /**
+     * Address:port of every server connected to via {@link ServerFinderScreen}'s
+     * Connect button, used by {@link #hideJoinedServers}. Not a user-facing
+     * setting - hidden via {@code visible(() -> false)} - but piggybacking on
+     * the Setting system means it's saved/loaded automatically along with
+     * everything else instead of needing custom persistence code.
+     */
+    public final Setting<List<String>> joinedServers = sgFilters.add(new StringListSetting.Builder()
+        .name("joined-servers")
+        .description("Internal bookkeeping for hide-joined-servers. Not meant to be edited directly.")
+        .defaultValue()
+        .visible(() -> false)
         .build()
     );
 

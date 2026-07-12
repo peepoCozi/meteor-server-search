@@ -14,12 +14,17 @@ import meteordevelopment.meteorclient.gui.widgets.WLabel;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.input.WDropdown;
+import meteordevelopment.meteorclient.gui.widgets.input.WIntEdit;
 import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -37,8 +42,12 @@ public class ServerFinderScreen extends WindowScreen {
     private WLabel statusLabel;
     private WTable table;
     private WTextBox motdBox;
+    private WTextBox versionBox;
+    private WIntEdit minPlayersEdit;
+    private WIntEdit maxPlayersEdit;
     private WDropdown<CrackedFilter> crackedDropdown;
     private WDropdown<ServerTypeFilter> serverTypeDropdown;
+    private WCheckbox hideJoinedBox;
 
     private long offset = 0;
     private boolean loading = false;
@@ -71,6 +80,35 @@ public class ServerFinderScreen extends WindowScreen {
 
         WButton search = controls.add(theme.button("Search")).widget();
         search.action = this::resetAndSearch;
+
+        // Second row: the remaining filters that were previously only
+        // reachable from the module's own settings screen, so this screen
+        // (whether opened from the module widget or the multiplayer menu's
+        // "Find Servers" button) has the same filter access either way.
+        WHorizontalList moreControls = add(theme.horizontalList()).expandX().widget();
+
+        moreControls.add(theme.label("Version:"));
+        versionBox = moreControls.add(theme.textBox(module.versionFilter.get(), "e.g. 1.21")).minWidth(100d).widget();
+        versionBox.action = this::resetAndSearch;
+
+        moreControls.add(theme.label("Min players:"));
+        minPlayersEdit = moreControls.add(theme.intEdit(module.minPlayers.get(), 0, Integer.MAX_VALUE, true)).widget();
+        minPlayersEdit.actionOnRelease = this::resetAndSearch;
+
+        moreControls.add(theme.label("Max players:"));
+        maxPlayersEdit = moreControls.add(theme.intEdit(module.maxPlayers.get(), 0, Integer.MAX_VALUE, true)).widget();
+        maxPlayersEdit.actionOnRelease = this::resetAndSearch;
+
+        hideJoinedBox = moreControls.add(theme.checkbox(module.hideJoinedServers.get())).widget();
+        hideJoinedBox.action = this::resetAndSearch;
+        moreControls.add(theme.label("Hide joined"));
+
+        WButton clearHistory = moreControls.add(theme.button("Clear Joined History")).widget();
+        clearHistory.tooltip = "Forget every server you've connected to via this addon's Connect button";
+        clearHistory.action = () -> {
+            module.joinedServers.set(new ArrayList<>());
+            resetAndSearch();
+        };
 
         statusLabel = add(theme.label("")).expandX().widget();
 
@@ -105,10 +143,21 @@ public class ServerFinderScreen extends WindowScreen {
         loading = true;
         statusLabel.set("Loading...");
 
+        // Keep the module's settings in sync with whatever's live in the
+        // screen, so reopening it (or the module's own settings screen)
+        // reflects the last search rather than stale defaults.
+        module.versionFilter.set(versionBox.get());
+        module.minPlayers.set(minPlayersEdit.get());
+        module.maxPlayers.set(maxPlayersEdit.get());
+        module.motdContains.set(motdBox.get());
+        module.crackedFilter.set(crackedDropdown.get());
+        module.serverTypeFilter.set(serverTypeDropdown.get());
+        module.hideJoinedServers.set(hideJoinedBox.checked);
+
         SearchFilters filters = new SearchFilters();
-        filters.versionName = blankToNull(module.versionFilter.get());
-        filters.minPlayers = module.minPlayers.get() > 0 ? module.minPlayers.get() : null;
-        filters.maxPlayers = module.maxPlayers.get() > 0 ? module.maxPlayers.get() : null;
+        filters.versionName = blankToNull(versionBox.get());
+        filters.minPlayers = minPlayersEdit.get() > 0 ? minPlayersEdit.get() : null;
+        filters.maxPlayers = maxPlayersEdit.get() > 0 ? maxPlayersEdit.get() : null;
         filters.cracked = crackedDropdown.get().toApiValue();
         filters.motdContains = blankToNull(motdBox.get());
         filters.serverType = serverTypeDropdown.get().toApiValue();
@@ -129,13 +178,19 @@ public class ServerFinderScreen extends WindowScreen {
         offset = response.offset;
         table.clear();
 
-        if (response.servers.isEmpty()) {
-            statusLabel.set("No servers found for this search.");
-        } else {
-            statusLabel.set(response.servers.size() + " servers (offset " + response.offset + ")");
+        List<FoundServer> servers = response.servers;
+        if (hideJoinedBox.checked) {
+            List<String> joined = module.joinedServers.get();
+            servers = servers.stream().filter(s -> !joined.contains(s.hostAndPort())).toList();
         }
 
-        for (FoundServer server : response.servers) {
+        if (servers.isEmpty()) {
+            statusLabel.set("No servers found for this search.");
+        } else {
+            statusLabel.set(servers.size() + " servers (offset " + response.offset + ")");
+        }
+
+        for (FoundServer server : servers) {
             addRow(server);
         }
     }
@@ -194,12 +249,28 @@ public class ServerFinderScreen extends WindowScreen {
             ServerAddress address = ServerAddress.parseString(hostAndPort);
             ServerData serverData = new ServerData(hostAndPort, hostAndPort, ServerData.Type.OTHER);
 
+            markJoined(hostAndPort);
             onClose();
             ConnectScreen.startConnecting(this, mc, address, serverData, false, null);
         } catch (Exception e) {
             ServerFinderAddon.LOG.error("Failed to connect to {}", hostAndPort, e);
             statusLabel.set("Failed to connect: " + e.getMessage());
         }
+    }
+
+    /**
+     * Records a server as "joined" for {@code hide-joined-servers}. Only
+     * covers connections made through this screen's Connect button - there's
+     * no way to know about joins made by double-clicking a vanilla
+     * Multiplayer list entry or using the direct-connect screen.
+     */
+    private void markJoined(String hostAndPort) {
+        List<String> joined = module.joinedServers.get();
+        if (joined.contains(hostAndPort)) return;
+
+        List<String> updated = new ArrayList<>(joined);
+        updated.add(hostAndPort);
+        module.joinedServers.set(updated);
     }
 
     private String formatSoftware(String software) {
