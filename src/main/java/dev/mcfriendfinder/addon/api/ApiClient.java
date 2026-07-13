@@ -31,7 +31,8 @@ public class ApiClient {
 
     public void listServers(
         String baseUrl,
-        String apiKey,
+        String userApiKey,
+        String serverPassword,
         SearchFilters filters,
         Consumer<ServerListResponse> onSuccess,
         Consumer<Throwable> onError
@@ -43,8 +44,14 @@ public class ApiClient {
                     .timeout(Duration.ofSeconds(10))
                     .GET();
 
-                if (apiKey != null && !apiKey.isBlank()) {
-                    requestBuilder.header("X-API-Key", apiKey);
+                // Always sent - every request requires a registered user's
+                // key regardless of whether the instance set a Server
+                // Password. An instance will simply reject this with 401 if
+                // it's missing/invalid/revoked.
+                requestBuilder.header("X-User-Api-Key", userApiKey == null ? "" : userApiKey);
+
+                if (serverPassword != null && !serverPassword.isBlank()) {
+                    requestBuilder.header("X-Server-Password", serverPassword);
                 }
 
                 HttpResponse<String> response = HTTP_CLIENT.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());

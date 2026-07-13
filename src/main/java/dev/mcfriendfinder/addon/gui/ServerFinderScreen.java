@@ -67,6 +67,14 @@ public class ServerFinderScreen extends WindowScreen {
             return;
         }
 
+        if (module.userApiKey.get().isBlank()) {
+            add(theme.label("Set a User API Key in the Server Finder module's settings first."))
+                .expandX();
+            add(theme.label("(Join our Discord and run /register to get one.)"))
+                .expandX();
+            return;
+        }
+
         WHorizontalList controls = add(theme.horizontalList()).expandX().widget();
 
         motdBox = controls.add(theme.textBox(module.motdContains.get(), "Search MOTD...")).expandX().minWidth(200d).widget();
@@ -166,7 +174,8 @@ public class ServerFinderScreen extends WindowScreen {
 
         apiClient.listServers(
             module.apiBaseUrl.get(),
-            module.apiKey.get(),
+            module.userApiKey.get(),
+            module.serverPassword.get(),
             filters,
             this::onResults,
             this::onError

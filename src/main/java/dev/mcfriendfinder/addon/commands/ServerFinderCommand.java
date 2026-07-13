@@ -49,12 +49,18 @@ public class ServerFinderCommand extends Command {
             return;
         }
 
+        if (module.userApiKey.get().isBlank()) {
+            error("Set a User API Key in the Server Finder module's settings first (join our Discord and run /register).");
+            return;
+        }
+
         SearchFilters filters = new SearchFilters();
         filters.limit = 10;
 
         apiClient.listServers(
             module.apiBaseUrl.get(),
-            module.apiKey.get(),
+            module.userApiKey.get(),
+            module.serverPassword.get(),
             filters,
             response -> {
                 if (response.servers.isEmpty()) {

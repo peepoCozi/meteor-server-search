@@ -1,8 +1,8 @@
 # Meteor Client Server Searcher
 
-A [Meteor Client](https://meteorclient.com/) addon that allows users to browse servers indexed by my personal server scanner database which is still currently in private developement.
+A [Meteor Client](https://meteorclient.com/) addon that allows users to browse servers indexed by my personal server scanner database.
 
-This repo contains only the client-side addon. It talks to a companion scanner + REST API and it doesn't ship or require any specific hosted backend. You'll need the base URL (and optionally an API key) of an instance someone is running for you, or to self-host that backend yourself.
+This repo contains only the client-side addon. It talks to a companion scanner + REST API. By default it points at my own hosted instance, so it works without any setup - but you can point **API Base URL** at a different instance instead (your own self-hosted one, or a friend's) if you'd rather not depend on mine.
 
 ## Download
 
@@ -12,13 +12,17 @@ build required.
 
 ## Usage
 
-1. Enable the **Server Finder** module (category **Friend Finder**) and set
-  **API Base URL** to a running MC Friend Finder API instance, e.g.
-   `http://your-server:8080`. If that instance requires an API key, also
-   fill in **API Key**.
-2. Open the browser either via the module's "Open Server Finder" button, the
+1. Join the project's Discord and run `/register` there - it'll DM you a
+   **User API Key**. This is required; there's no other way to get one.
+2. Enable the **Server Finder** module (category **Friend Finder**) and set
+   **User API Key** to the key from step 1. **API Base URL** already
+   defaults to the maintainer's hosted instance, so you don't need to
+   change it unless you want to point at a different (self-hosted or a
+   friend's) instance - if that instance set its own **Server Password**,
+   fill that in too.
+3. Open the browser either via the module's "Open Server Finder" button, the
   new **Find Servers** button on the vanilla Multiplayer screen, or the
    `;server-finder` (alias `;sf`) chat command.
-3. Search/filter, then **Add** a result to your normal Multiplayer server
+4. Search/filter, then **Add** a result to your normal Multiplayer server
   list, or **Connect** to join it immediately.
 
