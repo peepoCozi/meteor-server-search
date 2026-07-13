@@ -1,8 +1,12 @@
-# Meteor Client Server Searcher
+# MineScan (Meteor addon)
 
-A [Meteor Client](https://meteorclient.com/) addon that allows users to browse servers indexed by my personal server scanner database.
+A [Meteor Client](https://meteorclient.com/) addon for browsing servers indexed
+by MineScan.
 
-This repo contains only the client-side addon. It talks to a companion scanner + REST API. By default it points at my own hosted instance, so it works without any setup - but you can point **API Base URL** at a different instance instead (your own self-hosted one, or a friend's) if you'd rather not depend on mine.
+This repo contains only the client-side addon. It talks to a companion scanner +
+REST API. By default it points at `https://api.minescan.net`, so it works without
+any setup - but you can point **API Base URL** at a different instance instead
+(your own self-hosted one, or a friend's) if you'd rather not depend on that.
 
 This project doesn't accept external code contributions - see [CONTRIBUTING.md](CONTRIBUTING.md) if you want to run a modified version yourself.
 
@@ -16,12 +20,12 @@ build required.
 
 1. Join the project's Discord and run `/register` there - it'll DM you a
    **User API Key**. This is required; there's no other way to get one.
-2. Enable the **Server Finder** module (category **Friend Finder**) and set
+2. Enable the **Server Finder** module (category **MineScan**) and set
    **User API Key** to the key from step 1. **API Base URL** already
-   defaults to the maintainer's hosted instance, so you don't need to
-   change it unless you want to point at a different (self-hosted or a
-   friend's) instance - if that instance set its own **Server Password**,
-   fill that in too.
+   defaults to `https://api.minescan.net`, so you don't need to change it
+   unless you want to point at a different (self-hosted or a friend's)
+   instance - if that instance set its own **Server Password**, fill that
+   in too.
 3. Open the browser either via the module's "Open Server Finder" button, the
   new **Find Servers** button on the vanilla Multiplayer screen, or the
    `;server-finder` (alias `;sf`) chat command.

@@ -26,7 +26,7 @@ import java.util.List;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 /**
- * Browses Minecraft servers found by a MC Friend Finder scanner (see
+ * Browses Minecraft servers found by a MineScan scanner (see
  * {@code scanner/} in the repo root) and lets you add them to your vanilla
  * Multiplayer server list, or connect to them directly.
  * <p>
@@ -48,19 +48,14 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
  * is never required for the maintainer's own instance.
  */
 public class ServerFinderModule extends Module {
-    /**
-     * TODO: replace with the real base URL of the hosted scanner instance
-     * before shipping a build meant for the public. Keep the scheme
-     * (http/https) and port explicit.
-     */
-    private static final String DEFAULT_API_BASE_URL = "http://your-scanner-domain.example:8080";
+    private static final String DEFAULT_API_BASE_URL = "https://api.minescan.net";
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgFilters = settings.createGroup("Default Filters");
 
     public final Setting<String> apiBaseUrl = sgGeneral.add(new StringSetting.Builder()
         .name("api-base-url")
-        .description("Base URL of the MC Friend Finder API to use. Defaults to the maintainer's hosted instance; change this to point at your own or a friend's self-hosted instance instead.")
+        .description("Base URL of the MineScan API to use. Defaults to the maintainer's hosted instance; change this to point at your own or a friend's self-hosted instance instead.")
         .defaultValue(DEFAULT_API_BASE_URL)
         .wide()
         .build()

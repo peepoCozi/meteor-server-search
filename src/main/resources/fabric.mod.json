@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "meteor-server-search",
   "version": "${version}",
-  "name": "Meteor Server Search",
-  "description": "A Meteor Client addon that allows users to browse servers indexed by my personal server scanner database which is still currently in private developement.",
+  "name": "MineScan",
+  "description": "Meteor Client addon for browsing Minecraft servers indexed by MineScan.",
   "authors": [
     "peepoCozi"
   ],

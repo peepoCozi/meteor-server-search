@@ -107,11 +107,12 @@ public class ServerFinderScreen extends WindowScreen {
         versionBox.action = this::resetAndSearch;
 
         moreControls.add(theme.label("Min players:"));
-        minPlayersEdit = moreControls.add(theme.intEdit(module.minPlayers.get(), 0, Integer.MAX_VALUE, true)).widget();
+        // Last arg `false` hides the +/- buttons - value is typed directly.
+        minPlayersEdit = moreControls.add(theme.intEdit(module.minPlayers.get(), 0, Integer.MAX_VALUE, false)).widget();
         minPlayersEdit.actionOnRelease = this::resetAndSearch;
 
         moreControls.add(theme.label("Max players:"));
-        maxPlayersEdit = moreControls.add(theme.intEdit(module.maxPlayers.get(), 0, Integer.MAX_VALUE, true)).widget();
+        maxPlayersEdit = moreControls.add(theme.intEdit(module.maxPlayers.get(), 0, Integer.MAX_VALUE, false)).widget();
         maxPlayersEdit.actionOnRelease = this::resetAndSearch;
 
         moreControls.add(theme.label("Address:"));

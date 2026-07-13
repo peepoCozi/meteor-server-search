@@ -12,11 +12,11 @@ import org.slf4j.Logger;
 
 public class ServerFinderAddon extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("Friend Finder");
+    public static final Category CATEGORY = new Category("MineScan");
 
     @Override
     public void onInitialize() {
-        LOG.info("Initializing Meteor Server Search");
+        LOG.info("Initializing MineScan");
 
         Modules.get().add(new ServerFinderModule());
         Commands.add(new ServerFinderCommand());
