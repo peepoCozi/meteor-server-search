@@ -13,6 +13,12 @@ public class SearchFilters {
     public String motdContains;
     /** One of {@code ServerTypeFilter}'s API values (e.g. "paper"), or null for any. */
     public String serverType;
+    /** One of {@code WhitelistFilter}'s API values ("open"/"whitelisted"/"unknown"), or null for any. */
+    public String whitelistStatus;
+    /** Exact IP match. Can legitimately return more than one row (nearby-port scan pass). */
+    public String address;
+    /** Case-insensitive substring match against any username ever seen on the server. */
+    public String player;
     public long limit = 50;
     public long offset = 0;
 }

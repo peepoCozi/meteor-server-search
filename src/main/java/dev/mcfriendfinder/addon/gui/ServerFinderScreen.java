@@ -7,6 +7,7 @@ import dev.mcfriendfinder.addon.api.FoundServer;
 import dev.mcfriendfinder.addon.api.SearchFilters;
 import dev.mcfriendfinder.addon.api.ServerListResponse;
 import dev.mcfriendfinder.addon.api.ServerTypeFilter;
+import dev.mcfriendfinder.addon.api.WhitelistFilter;
 import dev.mcfriendfinder.addon.modules.ServerFinderModule;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WindowScreen;
@@ -47,6 +48,9 @@ public class ServerFinderScreen extends WindowScreen {
     private WIntEdit maxPlayersEdit;
     private WDropdown<CrackedFilter> crackedDropdown;
     private WDropdown<ServerTypeFilter> serverTypeDropdown;
+    private WDropdown<WhitelistFilter> whitelistDropdown;
+    private WTextBox addressBox;
+    private WTextBox playerBox;
     private WCheckbox hideJoinedBox;
 
     private long offset = 0;
@@ -86,6 +90,9 @@ public class ServerFinderScreen extends WindowScreen {
         serverTypeDropdown = controls.add(theme.dropdown(module.serverTypeFilter.get())).widget();
         serverTypeDropdown.action = this::resetAndSearch;
 
+        whitelistDropdown = controls.add(theme.dropdown(module.whitelistFilter.get())).widget();
+        whitelistDropdown.action = this::resetAndSearch;
+
         WButton search = controls.add(theme.button("Search")).widget();
         search.action = this::resetAndSearch;
 
@@ -106,6 +113,14 @@ public class ServerFinderScreen extends WindowScreen {
         moreControls.add(theme.label("Max players:"));
         maxPlayersEdit = moreControls.add(theme.intEdit(module.maxPlayers.get(), 0, Integer.MAX_VALUE, true)).widget();
         maxPlayersEdit.actionOnRelease = this::resetAndSearch;
+
+        moreControls.add(theme.label("Address:"));
+        addressBox = moreControls.add(theme.textBox(module.addressFilter.get(), "e.g. 1.2.3.4")).minWidth(100d).widget();
+        addressBox.action = this::resetAndSearch;
+
+        moreControls.add(theme.label("Player:"));
+        playerBox = moreControls.add(theme.textBox(module.playerFilter.get(), "e.g. Notch")).minWidth(100d).widget();
+        playerBox.action = this::resetAndSearch;
 
         hideJoinedBox = moreControls.add(theme.checkbox(module.hideJoinedServers.get())).widget();
         hideJoinedBox.action = this::resetAndSearch;
@@ -160,6 +175,9 @@ public class ServerFinderScreen extends WindowScreen {
         module.motdContains.set(motdBox.get());
         module.crackedFilter.set(crackedDropdown.get());
         module.serverTypeFilter.set(serverTypeDropdown.get());
+        module.whitelistFilter.set(whitelistDropdown.get());
+        module.addressFilter.set(addressBox.get());
+        module.playerFilter.set(playerBox.get());
         module.hideJoinedServers.set(hideJoinedBox.checked);
 
         SearchFilters filters = new SearchFilters();
@@ -169,6 +187,9 @@ public class ServerFinderScreen extends WindowScreen {
         filters.cracked = crackedDropdown.get().toApiValue();
         filters.motdContains = blankToNull(motdBox.get());
         filters.serverType = serverTypeDropdown.get().toApiValue();
+        filters.whitelistStatus = whitelistDropdown.get().toApiValue();
+        filters.address = blankToNull(addressBox.get());
+        filters.player = blankToNull(playerBox.get());
         filters.limit = module.pageSize.get();
         filters.offset = offset;
 
@@ -215,6 +236,7 @@ public class ServerFinderScreen extends WindowScreen {
         table.add(theme.label(formatSoftware(server.software))).widget();
         table.add(theme.label(formatPlayers(server))).widget();
         table.add(theme.label(server.cracked ? "Cracked" : "Online")).widget();
+        table.add(theme.label(formatWhitelist(server.whitelistStatus))).widget();
         table.add(theme.label(formatMotd(server.motd))).expandCellX().widget();
 
         WButton add = table.add(theme.button("Add")).widget();
@@ -275,6 +297,15 @@ public class ServerFinderScreen extends WindowScreen {
             case "neoforge" -> "NeoForge";
             case "bungeecord" -> "BungeeCord";
             default -> software.substring(0, 1).toUpperCase() + software.substring(1);
+        };
+    }
+
+    private String formatWhitelist(String whitelistStatus) {
+        if (whitelistStatus == null) return "?";
+        return switch (whitelistStatus) {
+            case "open" -> "Open";
+            case "whitelisted" -> "Whitelisted";
+            default -> "Unknown";
         };
     }
 

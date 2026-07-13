@@ -83,6 +83,9 @@ public class ApiClient {
         if (filters.cracked != null) appendParam(query, "cracked", filters.cracked.toString());
         if (filters.motdContains != null && !filters.motdContains.isBlank()) appendParam(query, "motd_contains", filters.motdContains);
         if (filters.serverType != null && !filters.serverType.isBlank()) appendParam(query, "server_type", filters.serverType);
+        if (filters.whitelistStatus != null && !filters.whitelistStatus.isBlank()) appendParam(query, "whitelist_status", filters.whitelistStatus);
+        if (filters.address != null && !filters.address.isBlank()) appendParam(query, "address", filters.address);
+        if (filters.player != null && !filters.player.isBlank()) appendParam(query, "player", filters.player);
 
         return URI.create(base + "/api/v1/servers?" + query);
     }

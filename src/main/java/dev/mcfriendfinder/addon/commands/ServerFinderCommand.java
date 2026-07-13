@@ -1,5 +1,6 @@
 package dev.mcfriendfinder.addon.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.mcfriendfinder.addon.api.ApiClient;
 import dev.mcfriendfinder.addon.api.FoundServer;
@@ -13,8 +14,10 @@ import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 
 /**
  * A non-GUI alternative to the module's "Open Server Finder" button:
- * `;server-finder` (or `;sf`) opens the browser screen, and
- * `;server-finder list` prints a quick top-10 summary straight into chat.
+ * `;server-finder` (or `;sf`) opens the browser screen, `;server-finder list`
+ * prints a quick top-10 summary straight into chat, and `;server-finder list
+ * address <ip>` / `;server-finder list player <username>` narrow that lookup
+ * to a specific IP or username - mirroring the Discord bot's `/search`.
  */
 public class ServerFinderCommand extends Command {
     private final ApiClient apiClient = new ApiClient();
@@ -30,10 +33,20 @@ public class ServerFinderCommand extends Command {
             return SINGLE_SUCCESS;
         });
 
-        builder.then(literal("list").executes(context -> {
-            listInChat();
-            return SINGLE_SUCCESS;
-        }));
+        builder.then(literal("list")
+            .executes(context -> {
+                listInChat(null, null);
+                return SINGLE_SUCCESS;
+            })
+            .then(literal("address").then(argument("address", StringArgumentType.word()).executes(context -> {
+                listInChat(StringArgumentType.getString(context, "address"), null);
+                return SINGLE_SUCCESS;
+            })))
+            .then(literal("player").then(argument("player", StringArgumentType.word()).executes(context -> {
+                listInChat(null, StringArgumentType.getString(context, "player"));
+                return SINGLE_SUCCESS;
+            })))
+        );
     }
 
     private void openScreen() {
@@ -41,7 +54,7 @@ public class ServerFinderCommand extends Command {
         mc.setScreen(new ServerFinderScreen(GuiThemes.get(), module));
     }
 
-    private void listInChat() {
+    private void listInChat(String address, String player) {
         ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
 
         if (module.apiBaseUrl.get().isBlank()) {
@@ -56,6 +69,8 @@ public class ServerFinderCommand extends Command {
 
         SearchFilters filters = new SearchFilters();
         filters.limit = 10;
+        filters.address = address;
+        filters.player = player;
 
         apiClient.listServers(
             module.apiBaseUrl.get(),

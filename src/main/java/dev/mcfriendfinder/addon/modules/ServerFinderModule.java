@@ -3,6 +3,7 @@ package dev.mcfriendfinder.addon.modules;
 import dev.mcfriendfinder.addon.ServerFinderAddon;
 import dev.mcfriendfinder.addon.api.CrackedFilter;
 import dev.mcfriendfinder.addon.api.ServerTypeFilter;
+import dev.mcfriendfinder.addon.api.WhitelistFilter;
 import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.world.ServerConnectEndEvent;
@@ -123,6 +124,27 @@ public class ServerFinderModule extends Module {
     public final Setting<String> motdContains = sgFilters.add(new StringSetting.Builder()
         .name("motd-contains")
         .description("Only show servers whose MOTD contains this text. Leave blank for any.")
+        .defaultValue("")
+        .build()
+    );
+
+    public final Setting<WhitelistFilter> whitelistFilter = sgFilters.add(new EnumSetting.Builder<WhitelistFilter>()
+        .name("whitelist-filter")
+        .description("Filter servers by detected whitelist status. Online-mode servers always show as \"Unknown\" - see the README's ethics notice for why.")
+        .defaultValue(WhitelistFilter.ANY)
+        .build()
+    );
+
+    public final Setting<String> addressFilter = sgFilters.add(new StringSetting.Builder()
+        .name("address")
+        .description("Only show servers at this exact IP address. Leave blank for any.")
+        .defaultValue("")
+        .build()
+    );
+
+    public final Setting<String> playerFilter = sgFilters.add(new StringSetting.Builder()
+        .name("player")
+        .description("Only show servers where this username has ever been seen. Leave blank for any.")
         .defaultValue("")
         .build()
     );

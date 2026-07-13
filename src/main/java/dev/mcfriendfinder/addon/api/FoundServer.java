@@ -30,6 +30,16 @@ public class FoundServer {
     @SerializedName("last_seen")
     public String lastSeen;
 
+    /** One of "open", "whitelisted", or "unknown". */
+    @SerializedName("whitelist_status")
+    public String whitelistStatus;
+
+    @SerializedName("is_up")
+    public boolean isUp;
+
+    @SerializedName("last_checked")
+    public String lastChecked;
+
     public String hostAndPort() {
         return address + ":" + port;
     }
