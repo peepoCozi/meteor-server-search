@@ -1,7 +1,6 @@
-# MineScan (Meteor addon)
+# MineScan-Addon
 
-A [Meteor Client](https://meteorclient.com/) addon for browsing servers indexed  
-by MineScan. This is an alternative way to use MineScan. It integrates directly with the Minecraft GUI and Meteor Client. You can search for servers and add them to the multiplayer server list or connect directly. Additional filters are also available.
+A [Meteor Client](https://meteorclient.com/) addon for browsing servers indexed by MineScan. It integrates directly with the Minecraft GUI and Meteor Client. You can search for servers and add them to the multiplayer server list or connect directly. Additional filters are also available. If you are interested in using the Discord bot, please join [our Discord server](https://discord.gg/7G2kMrk6j8).
 
 ## Download
 
