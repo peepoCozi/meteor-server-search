@@ -64,12 +64,12 @@ public class MineScanScreen extends WindowScreen {
     @Override
     public void initWidgets() {
         if (module.userApiKey.get().isBlank()) {
-            add(theme.label("You need a User API Key to search MineScan servers."))
+            add(theme.label("You need a User Access Code to search MineScan servers."))
                 .expandX();
             add(theme.label("Get one from Discord with /register, then paste it below."))
                 .expandX();
 
-            WTextBox keyBox = add(theme.textBox("", "User API Key"))
+            WTextBox keyBox = add(theme.textBox("", "User Access Code"))
                 .expandX()
                 .minWidth(280d)
                 .widget();

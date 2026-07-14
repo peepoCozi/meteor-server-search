@@ -12,9 +12,9 @@ import net.minecraft.client.gui.screens.Screen;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 /**
- * Small screen for pasting a MineScan User API Key without digging through
- * Meteor's module settings. Opened from the vanilla Multiplayer menu or
- * from {@link MineScanScreen} when no key is configured yet.
+ * Small screen for pasting a MineScan User Access Code without digging
+ * through Meteor's module settings. Opened from the vanilla Multiplayer
+ * menu or from {@link MineScanScreen} when no code is configured yet.
  */
 public class ApiKeySetupScreen extends WindowScreen {
     private final MineScanModule module;
@@ -26,7 +26,7 @@ public class ApiKeySetupScreen extends WindowScreen {
     }
 
     public ApiKeySetupScreen(GuiTheme theme, MineScanModule module, Screen returnTo, Runnable onSaved) {
-        super(theme, "MineScan API Key");
+        super(theme, "MineScan Access Code");
         this.module = module;
         this.returnTo = returnTo;
         this.onSaved = onSaved;
@@ -34,12 +34,12 @@ public class ApiKeySetupScreen extends WindowScreen {
 
     @Override
     public void initWidgets() {
-        add(theme.label("Paste your User API Key from Discord (/register)."))
+        add(theme.label("Paste your User Access Code from Discord (/register)."))
             .expandX();
         add(theme.label("Required to search MineScan servers."))
             .expandX();
 
-        WTextBox keyBox = add(theme.textBox(module.userApiKey.get(), "User API Key"))
+        WTextBox keyBox = add(theme.textBox(module.userApiKey.get(), "User Access Code"))
             .expandX()
             .minWidth(280d)
             .widget();

@@ -48,7 +48,7 @@ public class ApiClient {
                 String key = normalizeUserApiKey(userApiKey);
                 if (key.isEmpty()) {
                     throw new RuntimeException(
-                        "User API Key is empty. Paste the key from your Discord DM into the MineScan module settings."
+                        "User Access Code is empty. Paste the code from your Discord DM into the MineScan module settings."
                     );
                 }
 
@@ -136,13 +136,13 @@ public class ApiClient {
     private static String formatHttpError(int status, String body, int keyLen) {
         String detail = (body == null || body.isBlank()) ? "(empty body)" : body;
         if (status == 401) {
-            return "API returned HTTP 401 (unauthorized). Your User API Key was rejected. "
-                + "Re-copy the newest key from the bot DM into MineScan settings "
-                + "(key length now=" + keyLen + "). Verify with: curl -H \"X-User-Api-Key: YOUR_KEY\" "
+            return "API returned HTTP 401 (unauthorized). Your User Access Code was rejected. "
+                + "Re-copy the newest code from the bot DM into MineScan settings "
+                + "(code length now=" + keyLen + "). Verify with: curl -H \"X-User-Api-Key: YOUR_CODE\" "
                 + "\"https://api.minescan.net/api/v1/servers?limit=1\". Body: " + detail;
         }
         if (status == 403) {
-            return "API returned HTTP 403 (forbidden) - your key is revoked. Ask an admin to /unrevoke you. Body: " + detail;
+            return "API returned HTTP 403 (forbidden) - your code is revoked. Ask an admin to /unrevoke you. Body: " + detail;
         }
         return "API returned HTTP " + status + ": " + detail;
     }

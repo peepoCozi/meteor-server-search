@@ -41,9 +41,11 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
  * scanner/api}, since that's the only place it can't be bypassed by a
  * modified client.
  * <p>
- * Every request requires {@link #userApiKey}, obtained by joining the
- * project's Discord and running {@code /register} there - the addon itself
- * has no way to mint one. {@link #serverPassword} is a separate, optional
+ * Every request requires {@link #userApiKey} (displayed to users as the
+ * "User Access Code"), obtained by joining the project's Discord and
+ * running {@code /register} there - the addon itself has no way to mint
+ * one. Note this is addon-only: the Discord bot's own commands (including
+ * its {@code /search}) don't require it. {@link #serverPassword} is a separate, optional
  * secret only needed against a self-hosted / 3rd-party instance that
  * configured one; it is never used against the default MineScan API.
  */
@@ -69,9 +71,14 @@ public class MineScanModule extends Module {
         .build()
     );
 
+    /**
+     * Displayed to users as "User Access Code" (renamed from "User API
+     * Key"). The setting's internal {@code name()} is left unchanged so
+     * upgrading users don't lose their already-saved value.
+     */
     public final Setting<String> userApiKey = sgGeneral.add(new StringSetting.Builder()
         .name("user-api-key")
-        .description("Required for every request. Get yours by joining our Discord and running /register there.")
+        .description("Required for every request. Get your User Access Code by joining our Discord and running /register there.")
         .defaultValue("")
         .wide()
         .build()

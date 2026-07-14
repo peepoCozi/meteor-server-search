@@ -19,9 +19,11 @@ build required.
 ## Usage
 
 1. Join the project's Discord and run `/register` there - it'll DM you a
-   **User API Key**. This is required; there's no other way to get one.
-2. Enable the **MineScan** module and set **User API Key** to the key from
-   step 1. Requests use `https://api.minescan.net` by default. Only check
+   **User Access Code**. This is required to use the addon; there's no
+   other way to get one. (You don't need this to use the bot's own
+   `/search`, `/server`, or `/stats` commands in Discord.)
+2. Enable the **MineScan** module and set **User Access Code** to the code
+   from step 1. Requests use `https://api.minescan.net` by default. Only check
    **Self-Hosted Scanner** if you want to set a custom **API Base URL** (and
    optional **Server Password**) for your own instance.
 3. Open the browser either via the module's **Browse Servers** button, the

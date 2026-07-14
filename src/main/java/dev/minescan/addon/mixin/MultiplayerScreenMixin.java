@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Adds "API Key" and "MineScan" buttons directly to the vanilla
+ * Adds "Access Code" and "MineScan" buttons directly to the vanilla
  * Multiplayer screen, so MineScan is usable without digging through
  * Meteor's module list first.
  * <p>
@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(JoinMultiplayerScreen.class)
 public abstract class MultiplayerScreenMixin extends Screen {
     @Unique
-    private static final int API_KEY_BUTTON_WIDTH = 70;
+    private static final int ACCESS_CODE_BUTTON_WIDTH = 90;
     @Unique
     private static final int MINESCAN_BUTTON_WIDTH = 80;
     @Unique
@@ -55,8 +55,8 @@ public abstract class MultiplayerScreenMixin extends Screen {
 
         if (minescan$apiKeyButton == null) {
             minescan$apiKeyButton = addRenderableWidget(
-                new Button.Builder(Component.literal("API Key"), button -> minescan$openApiKeySetup(self))
-                    .size(API_KEY_BUTTON_WIDTH, BUTTON_HEIGHT)
+                new Button.Builder(Component.literal("Access Code"), button -> minescan$openApiKeySetup(self))
+                    .size(ACCESS_CODE_BUTTON_WIDTH, BUTTON_HEIGHT)
                     .build()
             );
         }
@@ -71,7 +71,7 @@ public abstract class MultiplayerScreenMixin extends Screen {
 
         int y = this.height - MARGIN - BUTTON_HEIGHT;
         minescan$apiKeyButton.setPosition(MARGIN, y);
-        minescan$browseButton.setPosition(MARGIN + API_KEY_BUTTON_WIDTH + BUTTON_GAP, y);
+        minescan$browseButton.setPosition(MARGIN + ACCESS_CODE_BUTTON_WIDTH + BUTTON_GAP, y);
     }
 
     @Unique

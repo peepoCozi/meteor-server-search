@@ -59,7 +59,7 @@ public class MineScanCommand extends Command {
         MineScanModule module = Modules.get().get(MineScanModule.class);
 
         if (module.userApiKey.get().isBlank()) {
-            error("Set a User API Key in the MineScan module's settings first (join our Discord and run /register).");
+            error("Set a User Access Code in the MineScan module's settings first (join our Discord and run /register).");
             return;
         }
 
