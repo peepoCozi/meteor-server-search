@@ -1,0 +1,44 @@
+name: Build & Release
+
+# Lives at addon/.github/workflows in the private monorepo (inert there,
+# since GitHub only reads .github/workflows/ at a repo's actual root) and
+# becomes active once `git subtree push --prefix=addon` publishes it to the
+# public meteor-server-search repo's root .github/workflows/.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        run: ./gradlew build --no-daemon
+
+      - name: Read mod version
+        id: version
+        run: |
+          version=$(grep '^mod-version' gradle/libs.versions.toml | sed -E 's/.*"(.*)".*/\1/')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          draft: true
+          files: build/libs/*.jar

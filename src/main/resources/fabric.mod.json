@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "meteor-server-search",
+  "version": "${version}",
+  "name": "MineScan",
+  "description": "Meteor Client addon for browsing Minecraft servers indexed by MineScan.",
+  "authors": [
+    "peepoCozi"
+  ],
+  "contact": {
+    "sources": "https://github.com/peepoCozi/meteor-server-search"
+  },
+  "license": "AGPL-3.0-or-later",
+  "icon": "assets/minescan/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "dev.minescan.addon.MineScanAddon"
+    ]
+  },
+  "mixins": [
+    "minescan.mixins.json"
+  ],
+  "custom": {
+    "meteor-client:color": "40,180,99",
+    "modmenu": {
+      "parent": {
+        "id": "meteor-client"
+      }
+    }
+  },
+  "depends": {
+    "java": ">=${jdk_version}",
+    "minecraft": "${minecraft_version}",
+    "meteor-client": "*"
+  }
+}
