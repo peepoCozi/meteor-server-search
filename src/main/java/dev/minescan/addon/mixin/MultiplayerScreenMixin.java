@@ -1,6 +1,5 @@
 package dev.minescan.addon.mixin;
 
-import dev.minescan.addon.gui.ApiKeySetupScreen;
 import dev.minescan.addon.gui.MineScanScreen;
 import dev.minescan.addon.modules.MineScanModule;
 import meteordevelopment.meteorclient.gui.GuiThemes;
@@ -16,9 +15,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Adds "Access Code" and "MineScan" buttons directly to the vanilla
- * Multiplayer screen, so MineScan is usable without digging through
- * Meteor's module list first.
+ * Adds a "MineScan" button directly to the vanilla Multiplayer screen, so
+ * MineScan is usable without digging through Meteor's module list first.
  * <p>
  * Mirrors how meteor-client's own {@code JoinMultiplayerScreenMixin} adds its
  * "Accounts"/"Proxies" buttons - injecting into {@code repositionElements}
@@ -29,18 +27,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(JoinMultiplayerScreen.class)
 public abstract class MultiplayerScreenMixin extends Screen {
     @Unique
-    private static final int ACCESS_CODE_BUTTON_WIDTH = 90;
-    @Unique
     private static final int MINESCAN_BUTTON_WIDTH = 80;
     @Unique
     private static final int BUTTON_HEIGHT = 20;
     @Unique
     private static final int MARGIN = 4;
-    @Unique
-    private static final int BUTTON_GAP = 4;
-
-    @Unique
-    private Button minescan$apiKeyButton;
 
     @Unique
     private Button minescan$browseButton;
@@ -51,16 +42,6 @@ public abstract class MultiplayerScreenMixin extends Screen {
 
     @Inject(method = "repositionElements", at = @At("TAIL"))
     private void minescan$onInit(CallbackInfo ci) {
-        JoinMultiplayerScreen self = (JoinMultiplayerScreen) (Object) this;
-
-        if (minescan$apiKeyButton == null) {
-            minescan$apiKeyButton = addRenderableWidget(
-                new Button.Builder(Component.literal("Access Code"), button -> minescan$openApiKeySetup(self))
-                    .size(ACCESS_CODE_BUTTON_WIDTH, BUTTON_HEIGHT)
-                    .build()
-            );
-        }
-
         if (minescan$browseButton == null) {
             minescan$browseButton = addRenderableWidget(
                 new Button.Builder(Component.literal("MineScan"), button -> minescan$openBrowser())
@@ -70,14 +51,7 @@ public abstract class MultiplayerScreenMixin extends Screen {
         }
 
         int y = this.height - MARGIN - BUTTON_HEIGHT;
-        minescan$apiKeyButton.setPosition(MARGIN, y);
-        minescan$browseButton.setPosition(MARGIN + ACCESS_CODE_BUTTON_WIDTH + BUTTON_GAP, y);
-    }
-
-    @Unique
-    private void minescan$openApiKeySetup(JoinMultiplayerScreen parent) {
-        MineScanModule module = Modules.get().get(MineScanModule.class);
-        this.minecraft.setScreen(new ApiKeySetupScreen(GuiThemes.get(), module, parent));
+        minescan$browseButton.setPosition(MARGIN, y);
     }
 
     @Unique

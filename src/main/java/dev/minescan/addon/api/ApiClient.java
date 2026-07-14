@@ -138,6 +138,15 @@ public class ApiClient {
         if (status == 403) {
             return "API returned HTTP 403 (forbidden) - your code is revoked. Ask an admin to /unrevoke you. Body: " + detail;
         }
+        if (status == 521) {
+            return "API returned HTTP 521 - the MineScan API is unreachable right now. "
+                + "Cloudflare could not reach the origin server (this is not an access-code problem). "
+                + "Try again later once the API host is back online.";
+        }
+        if (status == 522 || status == 523 || status == 524) {
+            return "API returned HTTP " + status + " - the MineScan API host is not responding. "
+                + "Try again later once the server is back online.";
+        }
         return "API returned HTTP " + status + ": " + detail;
     }
 
