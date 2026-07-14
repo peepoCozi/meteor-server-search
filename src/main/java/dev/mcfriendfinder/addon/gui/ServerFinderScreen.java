@@ -64,10 +64,25 @@ public class ServerFinderScreen extends WindowScreen {
     @Override
     public void initWidgets() {
         if (module.userApiKey.get().isBlank()) {
-            add(theme.label("Set a User API Key in the Server Finder module's settings first."))
+            add(theme.label("You need a User API Key to search MineScan servers."))
                 .expandX();
-            add(theme.label("(Join our Discord and run /register to get one.)"))
+            add(theme.label("Get one from Discord with /register, then paste it below."))
                 .expandX();
+
+            WTextBox keyBox = add(theme.textBox("", "User API Key"))
+                .expandX()
+                .minWidth(280d)
+                .widget();
+
+            WButton save = add(theme.button("Save & Search")).widget();
+            save.action = () -> {
+                String key = ApiClient.normalizeUserApiKey(keyBox.get());
+                if (key.isEmpty()) {
+                    return;
+                }
+                module.userApiKey.set(key);
+                mc.setScreen(new ServerFinderScreen(theme, module));
+            };
             return;
         }
 

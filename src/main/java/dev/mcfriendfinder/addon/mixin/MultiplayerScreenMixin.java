@@ -1,5 +1,6 @@
 package dev.mcfriendfinder.addon.mixin;
 
+import dev.mcfriendfinder.addon.gui.ApiKeySetupScreen;
 import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
 import dev.mcfriendfinder.addon.modules.ServerFinderModule;
 import meteordevelopment.meteorclient.gui.GuiThemes;
@@ -15,24 +16,31 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Adds a "Find Servers" button directly to the vanilla Multiplayer screen, so
- * the addon's server browser is discoverable without digging through
+ * Adds "API Key" and "Find Servers" buttons directly to the vanilla
+ * Multiplayer screen, so MineScan is usable without digging through
  * Meteor's module list first.
  * <p>
  * Mirrors how meteor-client's own {@code JoinMultiplayerScreenMixin} adds its
  * "Accounts"/"Proxies" buttons - injecting into {@code repositionElements}
- * at {@code TAIL} and adding a renderable widget positioned in a screen
- * corner. Depending on your Meteor config, this button may visually overlap
+ * at {@code TAIL} and adding renderable widgets positioned in a screen
+ * corner. Depending on your Meteor config, these buttons may visually overlap
  * with Meteor's own buttons; adjust the position below if so.
  */
 @Mixin(JoinMultiplayerScreen.class)
 public abstract class MultiplayerScreenMixin extends Screen {
     @Unique
-    private static final int BUTTON_WIDTH = 100;
+    private static final int API_KEY_BUTTON_WIDTH = 70;
+    @Unique
+    private static final int FIND_SERVERS_BUTTON_WIDTH = 100;
     @Unique
     private static final int BUTTON_HEIGHT = 20;
     @Unique
     private static final int MARGIN = 4;
+    @Unique
+    private static final int BUTTON_GAP = 4;
+
+    @Unique
+    private Button mcff$apiKeyButton;
 
     @Unique
     private Button mcff$findServersButton;
@@ -43,15 +51,33 @@ public abstract class MultiplayerScreenMixin extends Screen {
 
     @Inject(method = "repositionElements", at = @At("TAIL"))
     private void mcff$onInit(CallbackInfo ci) {
-        if (mcff$findServersButton == null) {
-            mcff$findServersButton = addRenderableWidget(
-                new Button.Builder(Component.literal("Find Servers"), button -> mcff$openServerFinder())
-                    .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+        JoinMultiplayerScreen self = (JoinMultiplayerScreen) (Object) this;
+
+        if (mcff$apiKeyButton == null) {
+            mcff$apiKeyButton = addRenderableWidget(
+                new Button.Builder(Component.literal("API Key"), button -> mcff$openApiKeySetup(self))
+                    .size(API_KEY_BUTTON_WIDTH, BUTTON_HEIGHT)
                     .build()
             );
         }
 
-        mcff$findServersButton.setPosition(MARGIN, this.height - MARGIN - BUTTON_HEIGHT);
+        if (mcff$findServersButton == null) {
+            mcff$findServersButton = addRenderableWidget(
+                new Button.Builder(Component.literal("Find Servers"), button -> mcff$openServerFinder())
+                    .size(FIND_SERVERS_BUTTON_WIDTH, BUTTON_HEIGHT)
+                    .build()
+            );
+        }
+
+        int y = this.height - MARGIN - BUTTON_HEIGHT;
+        mcff$apiKeyButton.setPosition(MARGIN, y);
+        mcff$findServersButton.setPosition(MARGIN + API_KEY_BUTTON_WIDTH + BUTTON_GAP, y);
+    }
+
+    @Unique
+    private void mcff$openApiKeySetup(JoinMultiplayerScreen parent) {
+        ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
+        this.minecraft.setScreen(new ApiKeySetupScreen(GuiThemes.get(), module, parent));
     }
 
     @Unique

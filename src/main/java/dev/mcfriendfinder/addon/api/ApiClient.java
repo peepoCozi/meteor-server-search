@@ -105,7 +105,7 @@ public class ApiClient {
      * or dashed UUID form. Normalize so a curl-working key matches what
      * {@code blake3} hashed at registration.
      */
-    static String normalizeUserApiKey(String raw) {
+    public static String normalizeUserApiKey(String raw) {
         if (raw == null) {
             return "";
         }
