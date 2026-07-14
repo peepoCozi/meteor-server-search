@@ -63,18 +63,18 @@ public class ServerFinderScreen extends WindowScreen {
 
     @Override
     public void initWidgets() {
-        if (module.apiBaseUrl.get().isBlank()) {
-            add(theme.label("Set an API Base URL in the Server Finder module's settings first."))
-                .expandX();
-            add(theme.label("(See the project README for how to run your own scanner + API.)"))
-                .expandX();
-            return;
-        }
-
         if (module.userApiKey.get().isBlank()) {
             add(theme.label("Set a User API Key in the Server Finder module's settings first."))
                 .expandX();
             add(theme.label("(Join our Discord and run /register to get one.)"))
+                .expandX();
+            return;
+        }
+
+        if (module.selfHostedScanner.get() && module.apiBaseUrl.get().isBlank()) {
+            add(theme.label("Self-Hosted Scanner is on, but API Base URL is empty."))
+                .expandX();
+            add(theme.label("(Set it in the Server Finder module settings, or turn Self-Hosted Scanner off.)"))
                 .expandX();
             return;
         }
@@ -195,9 +195,9 @@ public class ServerFinderScreen extends WindowScreen {
         filters.offset = offset;
 
         apiClient.listServers(
-            module.apiBaseUrl.get(),
+            module.getEffectiveApiBaseUrl(),
             module.userApiKey.get(),
-            module.serverPassword.get(),
+            module.getEffectiveServerPassword(),
             filters,
             this::onResults,
             this::onError

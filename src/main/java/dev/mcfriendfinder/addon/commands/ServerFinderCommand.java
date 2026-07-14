@@ -57,13 +57,13 @@ public class ServerFinderCommand extends Command {
     private void listInChat(String address, String player) {
         ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
 
-        if (module.apiBaseUrl.get().isBlank()) {
-            error("Set an API Base URL in the Server Finder module's settings first.");
+        if (module.userApiKey.get().isBlank()) {
+            error("Set a User API Key in the Server Finder module's settings first (join our Discord and run /register).");
             return;
         }
 
-        if (module.userApiKey.get().isBlank()) {
-            error("Set a User API Key in the Server Finder module's settings first (join our Discord and run /register).");
+        if (module.selfHostedScanner.get() && module.apiBaseUrl.get().isBlank()) {
+            error("Self-Hosted Scanner is on, but API Base URL is empty.");
             return;
         }
 
@@ -73,9 +73,9 @@ public class ServerFinderCommand extends Command {
         filters.player = player;
 
         apiClient.listServers(
-            module.apiBaseUrl.get(),
+            module.getEffectiveApiBaseUrl(),
             module.userApiKey.get(),
-            module.serverPassword.get(),
+            module.getEffectiveServerPassword(),
             filters,
             response -> {
                 if (response.servers.isEmpty()) {

@@ -21,11 +21,10 @@ build required.
 1. Join the project's Discord and run `/register` there - it'll DM you a
    **User API Key**. This is required; there's no other way to get one.
 2. Enable the **Server Finder** module (category **MineScan**) and set
-   **User API Key** to the key from step 1. **API Base URL** already
-   defaults to `https://api.minescan.net`, so you don't need to change it
-   unless you want to point at a different (self-hosted or a friend's)
-   instance - if that instance set its own **Server Password**, fill that
-   in too.
+   **User API Key** to the key from step 1. Requests use
+   `https://api.minescan.net` by default. Only check **Self-Hosted Scanner**
+   if you want to set a custom **API Base URL** (and optional **Server
+   Password**) for your own instance.
 3. Open the browser either via the module's "Open Server Finder" button, the
   new **Find Servers** button on the vanilla Multiplayer screen, or the
    `;server-finder` (alias `;sf`) chat command.

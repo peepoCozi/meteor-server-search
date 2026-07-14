@@ -30,9 +30,9 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
  * {@code scanner/} in the repo root) and lets you add them to your vanilla
  * Multiplayer server list, or connect to them directly.
  * <p>
- * {@link #apiBaseUrl} defaults to the maintainer's own hosted instance
- * ({@link #DEFAULT_API_BASE_URL}), but users are free to point it at a
- * different instance (their own, or a friend's self-hosted one) instead.
+ * By default every request goes to {@link #DEFAULT_API_BASE_URL}. Users who
+ * run their own scanner can enable {@link #selfHostedScanner} to reveal and
+ * edit the API Base URL (and optional Server Password).
  * <p>
  * The addon itself never scans or searches anything on its own - every
  * search/filter is a single request to whichever API instance is
@@ -44,20 +44,28 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
  * Every request requires {@link #userApiKey}, obtained by joining the
  * project's Discord and running {@code /register} there - the addon itself
  * has no way to mint one. {@link #serverPassword} is a separate, optional
- * secret only needed against a 3rd-party instance that configured one; it
- * is never required for the maintainer's own instance.
+ * secret only needed against a self-hosted / 3rd-party instance that
+ * configured one; it is never used against the default MineScan API.
  */
 public class ServerFinderModule extends Module {
-    private static final String DEFAULT_API_BASE_URL = "https://api.minescan.net";
+    public static final String DEFAULT_API_BASE_URL = "https://api.minescan.net";
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgFilters = settings.createGroup("Default Filters");
 
+    public final Setting<Boolean> selfHostedScanner = sgGeneral.add(new BoolSetting.Builder()
+        .name("self-hosted-scanner")
+        .description("Enable to point the addon at your own (or a friend's) scanner instance instead of the default MineScan API.")
+        .defaultValue(false)
+        .build()
+    );
+
     public final Setting<String> apiBaseUrl = sgGeneral.add(new StringSetting.Builder()
         .name("api-base-url")
-        .description("Base URL of the MineScan API to use. Defaults to the maintainer's hosted instance; change this to point at your own or a friend's self-hosted instance instead.")
+        .description("Base URL of your self-hosted MineScan API. Only shown when Self-Hosted Scanner is enabled.")
         .defaultValue(DEFAULT_API_BASE_URL)
         .wide()
+        .visible(selfHostedScanner::get)
         .build()
     );
 
@@ -71,9 +79,10 @@ public class ServerFinderModule extends Module {
 
     public final Setting<String> serverPassword = sgGeneral.add(new StringSetting.Builder()
         .name("server-password")
-        .description("Only needed if you're pointing this at a 3rd-party instance that configured an [api].server_password. Not needed for the default instance.")
+        .description("Only needed if your self-hosted instance configured an [api].server_password. Not used for the default MineScan API.")
         .defaultValue("")
         .wide()
+        .visible(selfHostedScanner::get)
         .build()
     );
 
@@ -189,6 +198,28 @@ public class ServerFinderModule extends Module {
         // it's just a GUI launcher - but hide-joined-servers bookkeeping
         // should still work regardless.
         MeteorClient.EVENT_BUS.subscribe(this);
+    }
+
+    /**
+     * Always the default MineScan URL unless the user explicitly enabled
+     * Self-Hosted Scanner - so hiding the setting also enforces it.
+     */
+    public String getEffectiveApiBaseUrl() {
+        if (!selfHostedScanner.get()) {
+            return DEFAULT_API_BASE_URL;
+        }
+        String configured = apiBaseUrl.get() == null ? "" : apiBaseUrl.get().strip();
+        return configured.isEmpty() ? DEFAULT_API_BASE_URL : configured;
+    }
+
+    /**
+     * Server Password is only meaningful for self-hosted instances.
+     */
+    public String getEffectiveServerPassword() {
+        if (!selfHostedScanner.get()) {
+            return "";
+        }
+        return serverPassword.get() == null ? "" : serverPassword.get();
     }
 
     @EventHandler
