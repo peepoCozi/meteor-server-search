@@ -34,6 +34,6 @@ public class MineScanAddon extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("peepoCozi", "meteor-server-search");
+        return new GithubRepo("peepoCozi", "MineScan-Addon");
     }
 }

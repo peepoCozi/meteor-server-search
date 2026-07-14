@@ -3,7 +3,7 @@ name: Build & Release
 # Lives at addon/.github/workflows in the private monorepo (inert there,
 # since GitHub only reads .github/workflows/ at a repo's actual root) and
 # becomes active once `git subtree push --prefix=addon` publishes it to the
-# public meteor-server-search repo's root .github/workflows/.
+# public MineScan-Addon repo's root .github/workflows/.
 on:
   push:
     branches: [main]

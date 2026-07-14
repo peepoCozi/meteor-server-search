@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "meteor-server-search",
+  "id": "minescan-addon",
   "version": "${version}",
   "name": "MineScan",
   "description": "Meteor Client addon for browsing Minecraft servers indexed by MineScan.",
@@ -8,7 +8,7 @@
     "peepoCozi"
   ],
   "contact": {
-    "sources": "https://github.com/peepoCozi/meteor-server-search"
+    "sources": "https://github.com/peepoCozi/MineScan-Addon"
   },
   "license": "AGPL-3.0-or-later",
   "icon": "assets/minescan/icon.png",
