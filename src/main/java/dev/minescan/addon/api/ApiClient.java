@@ -19,8 +19,8 @@ import java.util.function.Consumer;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 /**
- * A tiny HTTP client for talking to a self-hosted MineScan API
- * instance (see {@code scanner/api} in the repo root). Every call runs on
+ * A tiny HTTP client for talking to the official MineScan API
+ * (see {@code scanner/api} in the repo root). Every call runs on
  * {@link MeteorExecutor}'s background thread pool - never on the render
  * thread - and hands results back via {@code mc.execute(...)} so callbacks
  * are always safe to touch game/GUI state from.
@@ -38,7 +38,6 @@ public class ApiClient {
     public void listServers(
         String baseUrl,
         String userApiKey,
-        String serverPassword,
         SearchFilters filters,
         Consumer<ServerListResponse> onSuccess,
         Consumer<Throwable> onError
@@ -53,9 +52,8 @@ public class ApiClient {
                 }
 
                 URI uri = buildServersUri(baseUrl, filters);
-                String password = serverPassword == null ? "" : serverPassword.strip();
 
-                HttpResponse<String> response = sendGet(uri, key, password);
+                HttpResponse<String> response = sendGet(uri, key);
                 // Cloudflare (and similar) may 301/302 http→https; re-send with the same headers.
                 for (int hop = 0; hop < 3; hop++) {
                     int code = response.statusCode();
@@ -67,7 +65,7 @@ public class ApiClient {
                         break;
                     }
                     uri = uri.resolve(location.get());
-                    response = sendGet(uri, key, password);
+                    response = sendGet(uri, key);
                 }
 
                 if (response.statusCode() != 200) {
@@ -85,17 +83,13 @@ public class ApiClient {
         });
     }
 
-    private HttpResponse<String> sendGet(URI uri, String userApiKey, String serverPassword) throws Exception {
+    private HttpResponse<String> sendGet(URI uri, String userApiKey) throws Exception {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(uri)
             .timeout(Duration.ofSeconds(15))
             .header("User-Agent", "MineScan-Addon/1.0")
             .header("Accept", "application/json")
             .header("X-User-Api-Key", userApiKey)
             .GET();
-
-        if (!serverPassword.isBlank()) {
-            requestBuilder.header("X-Server-Password", serverPassword);
-        }
 
         return HTTP_CLIENT.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
     }

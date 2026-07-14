@@ -14,17 +14,16 @@ import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 
 /**
  * A non-GUI alternative to the module's "Browse Servers" button:
- * `;minescan` (aliases `;ms`, `;sf`, `;server-finder`) opens the browser
- * screen, `;minescan list` prints a quick top-10 summary straight into chat,
- * and `;minescan list address <ip>` / `;minescan list player <username>` narrow
- * that lookup to a specific IP or username - mirroring the Discord bot's
- * `/search`.
+ * `;minescan` (alias `;ms`) opens the browser screen, `;minescan list`
+ * prints a quick top-10 summary straight into chat, and `;minescan list
+ * address <ip>` / `;minescan list player <username>` narrow that lookup to
+ * a specific IP or username - mirroring the Discord bot's `/search`.
  */
 public class MineScanCommand extends Command {
     private final ApiClient apiClient = new ApiClient();
 
     public MineScanCommand() {
-        super("minescan", "Opens the MineScan browser, or lists results in chat.", "ms", "sf", "server-finder");
+        super("minescan", "Opens the MineScan browser, or lists results in chat.", "ms");
     }
 
     @Override
@@ -63,20 +62,14 @@ public class MineScanCommand extends Command {
             return;
         }
 
-        if (module.selfHostedScanner.get() && module.apiBaseUrl.get().isBlank()) {
-            error("Self-Hosted Scanner is on, but API Base URL is empty.");
-            return;
-        }
-
         SearchFilters filters = new SearchFilters();
         filters.limit = 10;
         filters.address = address;
         filters.player = player;
 
         apiClient.listServers(
-            module.getEffectiveApiBaseUrl(),
+            MineScanModule.DEFAULT_API_BASE_URL,
             module.userApiKey.get(),
-            module.getEffectiveServerPassword(),
             filters,
             response -> {
                 if (response.servers.isEmpty()) {

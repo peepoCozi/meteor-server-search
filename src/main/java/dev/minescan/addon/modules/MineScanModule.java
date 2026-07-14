@@ -26,50 +26,30 @@ import java.util.List;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 /**
- * Browses Minecraft servers found by a MineScan scanner (see
+ * Browses Minecraft servers found by the official MineScan scanner (see
  * {@code scanner/} in the repo root) and lets you add them to your vanilla
  * Multiplayer server list, or connect to them directly.
  * <p>
- * By default every request goes to {@link #DEFAULT_API_BASE_URL}. Users who
- * run their own scanner can enable {@link #selfHostedScanner} to reveal and
- * edit the API Base URL (and optional Server Password).
+ * Every request goes to {@link #DEFAULT_API_BASE_URL}, the official
+ * MineScan API - there is no self-hosting option.
  * <p>
  * The addon itself never scans or searches anything on its own - every
- * search/filter is a single request to whichever API instance is
- * configured, which does all the actual querying. Abuse protection (rate
- * limiting, mandatory per-user key) lives entirely server-side in {@code
- * scanner/api}, since that's the only place it can't be bypassed by a
- * modified client.
+ * search/filter is a single request to the MineScan API, which does all
+ * the actual querying. Abuse protection (rate limiting, mandatory per-user
+ * key) lives entirely server-side in {@code scanner/api}, since that's the
+ * only place it can't be bypassed by a modified client.
  * <p>
  * Every request requires {@link #userApiKey} (displayed to users as the
  * "User Access Code"), obtained by joining the project's Discord and
  * running {@code /register} there - the addon itself has no way to mint
  * one. Note this is addon-only: the Discord bot's own commands (including
- * its {@code /search}) don't require it. {@link #serverPassword} is a separate, optional
- * secret only needed against a self-hosted / 3rd-party instance that
- * configured one; it is never used against the default MineScan API.
+ * its {@code /search}) don't require it.
  */
 public class MineScanModule extends Module {
     public static final String DEFAULT_API_BASE_URL = "https://api.minescan.net";
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
     private final SettingGroup sgFilters = settings.createGroup("Default Filters");
-
-    public final Setting<Boolean> selfHostedScanner = sgGeneral.add(new BoolSetting.Builder()
-        .name("self-hosted-scanner")
-        .description("Enable to point the addon at your own (or a friend's) scanner instance instead of the default MineScan API.")
-        .defaultValue(false)
-        .build()
-    );
-
-    public final Setting<String> apiBaseUrl = sgGeneral.add(new StringSetting.Builder()
-        .name("api-base-url")
-        .description("Base URL of your self-hosted MineScan API. Only shown when Self-Hosted Scanner is enabled.")
-        .defaultValue(DEFAULT_API_BASE_URL)
-        .wide()
-        .visible(selfHostedScanner::get)
-        .build()
-    );
 
     /**
      * Displayed to users as "User Access Code" (renamed from "User API
@@ -81,15 +61,6 @@ public class MineScanModule extends Module {
         .description("Required for every request. Get your User Access Code by joining our Discord and running /register there.")
         .defaultValue("")
         .wide()
-        .build()
-    );
-
-    public final Setting<String> serverPassword = sgGeneral.add(new StringSetting.Builder()
-        .name("server-password")
-        .description("Only needed if your self-hosted instance configured an [api].server_password. Not used for the default MineScan API.")
-        .defaultValue("")
-        .wide()
-        .visible(selfHostedScanner::get)
         .build()
     );
 
@@ -205,28 +176,6 @@ public class MineScanModule extends Module {
         // it's just a GUI launcher - but hide-joined-servers bookkeeping
         // should still work regardless.
         MeteorClient.EVENT_BUS.subscribe(this);
-    }
-
-    /**
-     * Always the default MineScan URL unless the user explicitly enabled
-     * Self-Hosted Scanner - so hiding the setting also enforces it.
-     */
-    public String getEffectiveApiBaseUrl() {
-        if (!selfHostedScanner.get()) {
-            return DEFAULT_API_BASE_URL;
-        }
-        String configured = apiBaseUrl.get() == null ? "" : apiBaseUrl.get().strip();
-        return configured.isEmpty() ? DEFAULT_API_BASE_URL : configured;
-    }
-
-    /**
-     * Server Password is only meaningful for self-hosted instances.
-     */
-    public String getEffectiveServerPassword() {
-        if (!selfHostedScanner.get()) {
-            return "";
-        }
-        return serverPassword.get() == null ? "" : serverPassword.get();
     }
 
     @EventHandler

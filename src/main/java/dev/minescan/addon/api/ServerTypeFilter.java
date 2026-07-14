@@ -2,7 +2,7 @@ package dev.minescan.addon.api;
 
 /**
  * Filter over a server's detected software, mirroring
- * {@code mcff_core::software::ServerSoftware} on the scanner API side. {@code
+ * {@code minescan_core::software::ServerSoftware} on the scanner API side. {@code
  * toString()} is what Meteor's {@code WDropdown} renders as the option
  * label.
  */

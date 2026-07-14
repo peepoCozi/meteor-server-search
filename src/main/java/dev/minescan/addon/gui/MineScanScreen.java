@@ -86,14 +86,6 @@ public class MineScanScreen extends WindowScreen {
             return;
         }
 
-        if (module.selfHostedScanner.get() && module.apiBaseUrl.get().isBlank()) {
-            add(theme.label("Self-Hosted Scanner is on, but API Base URL is empty."))
-                .expandX();
-            add(theme.label("(Set it in the MineScan module settings, or turn Self-Hosted Scanner off.)"))
-                .expandX();
-            return;
-        }
-
         WHorizontalList controls = add(theme.horizontalList()).expandX().widget();
 
         motdBox = controls.add(theme.textBox(module.motdContains.get(), "Search MOTD...")).expandX().minWidth(200d).widget();
@@ -210,9 +202,8 @@ public class MineScanScreen extends WindowScreen {
         filters.offset = offset;
 
         apiClient.listServers(
-            module.getEffectiveApiBaseUrl(),
+            MineScanModule.DEFAULT_API_BASE_URL,
             module.userApiKey.get(),
-            module.getEffectiveServerPassword(),
             filters,
             this::onResults,
             this::onError
