@@ -4,9 +4,7 @@ A [Meteor Client](https://meteorclient.com/) addon for browsing servers indexed 
 
 ## Download
 
-Grab the latest built jar from the [Releases page](../../releases/latest) -
-every push to `main` automatically builds and publishes it there, no manual
-build required.
+Grab the latest built jar from the [Releases page](../../releases/latest) 
 
 ## Usage
 
