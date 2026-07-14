@@ -1,12 +1,12 @@
-package dev.mcfriendfinder.addon.commands;
+package dev.minescan.addon.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import dev.mcfriendfinder.addon.api.ApiClient;
-import dev.mcfriendfinder.addon.api.FoundServer;
-import dev.mcfriendfinder.addon.api.SearchFilters;
-import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
-import dev.mcfriendfinder.addon.modules.ServerFinderModule;
+import dev.minescan.addon.api.ApiClient;
+import dev.minescan.addon.api.FoundServer;
+import dev.minescan.addon.api.SearchFilters;
+import dev.minescan.addon.gui.MineScanScreen;
+import dev.minescan.addon.modules.MineScanModule;
 import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -20,10 +20,10 @@ import net.minecraft.client.multiplayer.ClientSuggestionProvider;
  * that lookup to a specific IP or username - mirroring the Discord bot's
  * `/search`.
  */
-public class ServerFinderCommand extends Command {
+public class MineScanCommand extends Command {
     private final ApiClient apiClient = new ApiClient();
 
-    public ServerFinderCommand() {
+    public MineScanCommand() {
         super("minescan", "Opens the MineScan browser, or lists results in chat.", "ms", "sf", "server-finder");
     }
 
@@ -51,12 +51,12 @@ public class ServerFinderCommand extends Command {
     }
 
     private void openScreen() {
-        ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
-        mc.setScreen(new ServerFinderScreen(GuiThemes.get(), module));
+        MineScanModule module = Modules.get().get(MineScanModule.class);
+        mc.setScreen(new MineScanScreen(GuiThemes.get(), module));
     }
 
     private void listInChat(String address, String player) {
-        ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
+        MineScanModule module = Modules.get().get(MineScanModule.class);
 
         if (module.userApiKey.get().isBlank()) {
             error("Set a User API Key in the MineScan module's settings first (join our Discord and run /register).");

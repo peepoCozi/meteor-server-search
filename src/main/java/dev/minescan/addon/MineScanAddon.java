@@ -1,8 +1,8 @@
-package dev.mcfriendfinder.addon;
+package dev.minescan.addon;
 
 import com.mojang.logging.LogUtils;
-import dev.mcfriendfinder.addon.commands.ServerFinderCommand;
-import dev.mcfriendfinder.addon.modules.ServerFinderModule;
+import dev.minescan.addon.commands.MineScanCommand;
+import dev.minescan.addon.modules.MineScanModule;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
@@ -10,7 +10,7 @@ import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import org.slf4j.Logger;
 
-public class ServerFinderAddon extends MeteorAddon {
+public class MineScanAddon extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category CATEGORY = new Category("MineScan");
 
@@ -18,8 +18,8 @@ public class ServerFinderAddon extends MeteorAddon {
     public void onInitialize() {
         LOG.info("Initializing MineScan");
 
-        Modules.get().add(new ServerFinderModule());
-        Commands.add(new ServerFinderCommand());
+        Modules.get().add(new MineScanModule());
+        Commands.add(new MineScanCommand());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ServerFinderAddon extends MeteorAddon {
 
     @Override
     public String getPackage() {
-        return "dev.mcfriendfinder.addon";
+        return "dev.minescan.addon";
     }
 
     @Override

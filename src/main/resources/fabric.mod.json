@@ -15,7 +15,7 @@
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "dev.mcfriendfinder.addon.ServerFinderAddon"
+      "dev.minescan.addon.MineScanAddon"
     ]
   },
   "mixins": [

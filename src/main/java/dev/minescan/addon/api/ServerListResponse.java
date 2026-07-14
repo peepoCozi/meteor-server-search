@@ -1,4 +1,4 @@
-package dev.mcfriendfinder.addon.api;
+package dev.minescan.addon.api;
 
 import java.util.List;
 

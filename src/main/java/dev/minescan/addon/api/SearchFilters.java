@@ -1,4 +1,4 @@
-package dev.mcfriendfinder.addon.api;
+package dev.minescan.addon.api;
 
 /**
  * Client-side representation of the query params accepted by

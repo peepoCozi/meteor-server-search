@@ -1,4 +1,4 @@
-package dev.mcfriendfinder.addon.api;
+package dev.minescan.addon.api;
 
 /**
  * Filter over a server's detected software, mirroring

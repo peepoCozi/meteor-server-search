@@ -1,14 +1,14 @@
-package dev.mcfriendfinder.addon.gui;
+package dev.minescan.addon.gui;
 
-import dev.mcfriendfinder.addon.ServerFinderAddon;
-import dev.mcfriendfinder.addon.api.ApiClient;
-import dev.mcfriendfinder.addon.api.CrackedFilter;
-import dev.mcfriendfinder.addon.api.FoundServer;
-import dev.mcfriendfinder.addon.api.SearchFilters;
-import dev.mcfriendfinder.addon.api.ServerListResponse;
-import dev.mcfriendfinder.addon.api.ServerTypeFilter;
-import dev.mcfriendfinder.addon.api.WhitelistFilter;
-import dev.mcfriendfinder.addon.modules.ServerFinderModule;
+import dev.minescan.addon.MineScanAddon;
+import dev.minescan.addon.api.ApiClient;
+import dev.minescan.addon.api.CrackedFilter;
+import dev.minescan.addon.api.FoundServer;
+import dev.minescan.addon.api.SearchFilters;
+import dev.minescan.addon.api.ServerListResponse;
+import dev.minescan.addon.api.ServerTypeFilter;
+import dev.minescan.addon.api.WhitelistFilter;
+import dev.minescan.addon.modules.MineScanModule;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.WLabel;
@@ -34,10 +34,10 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
  * and per-row actions to add a server to the vanilla Multiplayer list or
  * connect to it immediately.
  */
-public class ServerFinderScreen extends WindowScreen {
+public class MineScanScreen extends WindowScreen {
     private static final int MOTD_PREVIEW_LENGTH = 40;
 
-    private final ServerFinderModule module;
+    private final MineScanModule module;
     private final ApiClient apiClient = new ApiClient();
 
     private WLabel statusLabel;
@@ -56,7 +56,7 @@ public class ServerFinderScreen extends WindowScreen {
     private long offset = 0;
     private boolean loading = false;
 
-    public ServerFinderScreen(GuiTheme theme, ServerFinderModule module) {
+    public MineScanScreen(GuiTheme theme, MineScanModule module) {
         super(theme, "MineScan");
         this.module = module;
     }
@@ -81,7 +81,7 @@ public class ServerFinderScreen extends WindowScreen {
                     return;
                 }
                 module.userApiKey.set(key);
-                mc.setScreen(new ServerFinderScreen(theme, module));
+                mc.setScreen(new MineScanScreen(theme, module));
             };
             return;
         }
@@ -302,7 +302,7 @@ public class ServerFinderScreen extends WindowScreen {
             onClose();
             ConnectScreen.startConnecting(this, mc, address, serverData, false, null);
         } catch (Exception e) {
-            ServerFinderAddon.LOG.error("Failed to connect to {}", hostAndPort, e);
+            MineScanAddon.LOG.error("Failed to connect to {}", hostAndPort, e);
             statusLabel.set("Failed to connect: " + e.getMessage());
         }
     }

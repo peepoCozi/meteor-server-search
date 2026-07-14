@@ -1,7 +1,7 @@
-package dev.mcfriendfinder.addon.api;
+package dev.minescan.addon.api;
 
 import com.google.gson.Gson;
-import dev.mcfriendfinder.addon.ServerFinderAddon;
+import dev.minescan.addon.MineScanAddon;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
 
 import java.net.URI;
@@ -79,7 +79,7 @@ public class ApiClient {
 
                 mc.execute(() -> onSuccess.accept(parsed));
             } catch (Exception e) {
-                ServerFinderAddon.LOG.warn("Failed to fetch server list from {}", baseUrl, e);
+                MineScanAddon.LOG.warn("Failed to fetch server list from {}", baseUrl, e);
                 mc.execute(() -> onError.accept(e));
             }
         });

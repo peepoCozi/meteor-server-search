@@ -1,8 +1,8 @@
-package dev.mcfriendfinder.addon.mixin;
+package dev.minescan.addon.mixin;
 
-import dev.mcfriendfinder.addon.gui.ApiKeySetupScreen;
-import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
-import dev.mcfriendfinder.addon.modules.ServerFinderModule;
+import dev.minescan.addon.gui.ApiKeySetupScreen;
+import dev.minescan.addon.gui.MineScanScreen;
+import dev.minescan.addon.modules.MineScanModule;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.client.gui.components.Button;
@@ -76,13 +76,13 @@ public abstract class MultiplayerScreenMixin extends Screen {
 
     @Unique
     private void minescan$openApiKeySetup(JoinMultiplayerScreen parent) {
-        ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
+        MineScanModule module = Modules.get().get(MineScanModule.class);
         this.minecraft.setScreen(new ApiKeySetupScreen(GuiThemes.get(), module, parent));
     }
 
     @Unique
     private void minescan$openBrowser() {
-        ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
-        this.minecraft.setScreen(new ServerFinderScreen(GuiThemes.get(), module));
+        MineScanModule module = Modules.get().get(MineScanModule.class);
+        this.minecraft.setScreen(new MineScanScreen(GuiThemes.get(), module));
     }
 }

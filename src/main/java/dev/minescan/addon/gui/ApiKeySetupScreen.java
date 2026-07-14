@@ -1,7 +1,7 @@
-package dev.mcfriendfinder.addon.gui;
+package dev.minescan.addon.gui;
 
-import dev.mcfriendfinder.addon.api.ApiClient;
-import dev.mcfriendfinder.addon.modules.ServerFinderModule;
+import dev.minescan.addon.api.ApiClient;
+import dev.minescan.addon.modules.MineScanModule;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
@@ -14,18 +14,18 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 /**
  * Small screen for pasting a MineScan User API Key without digging through
  * Meteor's module settings. Opened from the vanilla Multiplayer menu or
- * from {@link ServerFinderScreen} when no key is configured yet.
+ * from {@link MineScanScreen} when no key is configured yet.
  */
 public class ApiKeySetupScreen extends WindowScreen {
-    private final ServerFinderModule module;
+    private final MineScanModule module;
     private final Screen returnTo;
     private final Runnable onSaved;
 
-    public ApiKeySetupScreen(GuiTheme theme, ServerFinderModule module, Screen returnTo) {
+    public ApiKeySetupScreen(GuiTheme theme, MineScanModule module, Screen returnTo) {
         this(theme, module, returnTo, null);
     }
 
-    public ApiKeySetupScreen(GuiTheme theme, ServerFinderModule module, Screen returnTo, Runnable onSaved) {
+    public ApiKeySetupScreen(GuiTheme theme, MineScanModule module, Screen returnTo, Runnable onSaved) {
         super(theme, "MineScan API Key");
         this.module = module;
         this.returnTo = returnTo;

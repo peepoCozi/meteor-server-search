@@ -1,4 +1,4 @@
-package dev.mcfriendfinder.addon.api;
+package dev.minescan.addon.api;
 
 /**
  * Tri-state filter over a server's online-mode status, mapped to the API's

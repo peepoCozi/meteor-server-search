@@ -1,10 +1,10 @@
-package dev.mcfriendfinder.addon.modules;
+package dev.minescan.addon.modules;
 
-import dev.mcfriendfinder.addon.ServerFinderAddon;
-import dev.mcfriendfinder.addon.api.CrackedFilter;
-import dev.mcfriendfinder.addon.api.ServerTypeFilter;
-import dev.mcfriendfinder.addon.api.WhitelistFilter;
-import dev.mcfriendfinder.addon.gui.ServerFinderScreen;
+import dev.minescan.addon.MineScanAddon;
+import dev.minescan.addon.api.CrackedFilter;
+import dev.minescan.addon.api.ServerTypeFilter;
+import dev.minescan.addon.api.WhitelistFilter;
+import dev.minescan.addon.gui.MineScanScreen;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.world.ServerConnectEndEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
@@ -47,7 +47,7 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
  * secret only needed against a self-hosted / 3rd-party instance that
  * configured one; it is never used against the default MineScan API.
  */
-public class ServerFinderModule extends Module {
+public class MineScanModule extends Module {
     public static final String DEFAULT_API_BASE_URL = "https://api.minescan.net";
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -189,8 +189,8 @@ public class ServerFinderModule extends Module {
         .build()
     );
 
-    public ServerFinderModule() {
-        super(ServerFinderAddon.CATEGORY, "minescan", "Browse servers indexed by MineScan and add them to your server list.");
+    public MineScanModule() {
+        super(MineScanAddon.CATEGORY, "minescan", "Browse servers indexed by MineScan and add them to your server list.");
 
         // Subscribed unconditionally (rather than relying on Module's
         // built-in autoSubscribe, which only listens while the module is
@@ -239,7 +239,7 @@ public class ServerFinderModule extends Module {
     @Override
     public WWidget getWidget(GuiTheme theme) {
         WButton open = theme.button("Browse Servers");
-        open.action = () -> mc.setScreen(new ServerFinderScreen(theme, this));
+        open.action = () -> mc.setScreen(new MineScanScreen(theme, this));
         return open;
     }
 }

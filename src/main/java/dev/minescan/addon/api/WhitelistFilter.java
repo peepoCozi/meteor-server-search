@@ -1,4 +1,4 @@
-package dev.mcfriendfinder.addon.api;
+package dev.minescan.addon.api;
 
 /**
  * Tri-state filter over a server's detected whitelist status, mapped to the
