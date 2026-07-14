@@ -190,7 +190,7 @@ public class ServerFinderModule extends Module {
     );
 
     public ServerFinderModule() {
-        super(ServerFinderAddon.CATEGORY, "server-finder", "Browse servers found by your self-hosted scanner and add them to your server list.");
+        super(ServerFinderAddon.CATEGORY, "minescan", "Browse servers indexed by MineScan and add them to your server list.");
 
         // Subscribed unconditionally (rather than relying on Module's
         // built-in autoSubscribe, which only listens while the module is
@@ -238,7 +238,7 @@ public class ServerFinderModule extends Module {
 
     @Override
     public WWidget getWidget(GuiTheme theme) {
-        WButton open = theme.button("Open Server Finder");
+        WButton open = theme.button("Browse Servers");
         open.action = () -> mc.setScreen(new ServerFinderScreen(theme, this));
         return open;
     }

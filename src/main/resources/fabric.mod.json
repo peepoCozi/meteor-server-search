@@ -11,7 +11,7 @@
     "sources": "https://github.com/peepoCozi/meteor-server-search"
   },
   "license": "AGPL-3.0-or-later",
-  "icon": "assets/mcfriendfinder/icon.png",
+  "icon": "assets/minescan/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
@@ -19,7 +19,7 @@
     ]
   },
   "mixins": [
-    "mcfriendfinder.mixins.json"
+    "minescan.mixins.json"
   ],
   "custom": {
     "meteor-client:color": "40,180,99",

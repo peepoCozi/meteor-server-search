@@ -48,7 +48,7 @@ public class ApiClient {
                 String key = normalizeUserApiKey(userApiKey);
                 if (key.isEmpty()) {
                     throw new RuntimeException(
-                        "User API Key is empty. Paste the key from your Discord DM into the Server Finder module settings."
+                        "User API Key is empty. Paste the key from your Discord DM into the MineScan module settings."
                     );
                 }
 
@@ -137,7 +137,7 @@ public class ApiClient {
         String detail = (body == null || body.isBlank()) ? "(empty body)" : body;
         if (status == 401) {
             return "API returned HTTP 401 (unauthorized). Your User API Key was rejected. "
-                + "Re-copy the newest key from the bot DM into Server Finder settings "
+                + "Re-copy the newest key from the bot DM into MineScan settings "
                 + "(key length now=" + keyLen + "). Verify with: curl -H \"X-User-Api-Key: YOUR_KEY\" "
                 + "\"https://api.minescan.net/api/v1/servers?limit=1\". Body: " + detail;
         }

@@ -13,17 +13,18 @@ import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 
 /**
- * A non-GUI alternative to the module's "Open Server Finder" button:
- * `;server-finder` (or `;sf`) opens the browser screen, `;server-finder list`
- * prints a quick top-10 summary straight into chat, and `;server-finder list
- * address <ip>` / `;server-finder list player <username>` narrow that lookup
- * to a specific IP or username - mirroring the Discord bot's `/search`.
+ * A non-GUI alternative to the module's "Browse Servers" button:
+ * `;minescan` (aliases `;ms`, `;sf`, `;server-finder`) opens the browser
+ * screen, `;minescan list` prints a quick top-10 summary straight into chat,
+ * and `;minescan list address <ip>` / `;minescan list player <username>` narrow
+ * that lookup to a specific IP or username - mirroring the Discord bot's
+ * `/search`.
  */
 public class ServerFinderCommand extends Command {
     private final ApiClient apiClient = new ApiClient();
 
     public ServerFinderCommand() {
-        super("server-finder", "Opens the Server Finder browser, or lists results in chat.", "sf");
+        super("minescan", "Opens the MineScan browser, or lists results in chat.", "ms", "sf", "server-finder");
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ServerFinderCommand extends Command {
         ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
 
         if (module.userApiKey.get().isBlank()) {
-            error("Set a User API Key in the Server Finder module's settings first (join our Discord and run /register).");
+            error("Set a User API Key in the MineScan module's settings first (join our Discord and run /register).");
             return;
         }
 

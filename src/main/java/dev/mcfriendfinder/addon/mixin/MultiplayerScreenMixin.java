@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Adds "API Key" and "Find Servers" buttons directly to the vanilla
+ * Adds "API Key" and "MineScan" buttons directly to the vanilla
  * Multiplayer screen, so MineScan is usable without digging through
  * Meteor's module list first.
  * <p>
@@ -31,7 +31,7 @@ public abstract class MultiplayerScreenMixin extends Screen {
     @Unique
     private static final int API_KEY_BUTTON_WIDTH = 70;
     @Unique
-    private static final int FIND_SERVERS_BUTTON_WIDTH = 100;
+    private static final int MINESCAN_BUTTON_WIDTH = 80;
     @Unique
     private static final int BUTTON_HEIGHT = 20;
     @Unique
@@ -40,48 +40,48 @@ public abstract class MultiplayerScreenMixin extends Screen {
     private static final int BUTTON_GAP = 4;
 
     @Unique
-    private Button mcff$apiKeyButton;
+    private Button minescan$apiKeyButton;
 
     @Unique
-    private Button mcff$findServersButton;
+    private Button minescan$browseButton;
 
     protected MultiplayerScreenMixin(Component title) {
         super(title);
     }
 
     @Inject(method = "repositionElements", at = @At("TAIL"))
-    private void mcff$onInit(CallbackInfo ci) {
+    private void minescan$onInit(CallbackInfo ci) {
         JoinMultiplayerScreen self = (JoinMultiplayerScreen) (Object) this;
 
-        if (mcff$apiKeyButton == null) {
-            mcff$apiKeyButton = addRenderableWidget(
-                new Button.Builder(Component.literal("API Key"), button -> mcff$openApiKeySetup(self))
+        if (minescan$apiKeyButton == null) {
+            minescan$apiKeyButton = addRenderableWidget(
+                new Button.Builder(Component.literal("API Key"), button -> minescan$openApiKeySetup(self))
                     .size(API_KEY_BUTTON_WIDTH, BUTTON_HEIGHT)
                     .build()
             );
         }
 
-        if (mcff$findServersButton == null) {
-            mcff$findServersButton = addRenderableWidget(
-                new Button.Builder(Component.literal("Find Servers"), button -> mcff$openServerFinder())
-                    .size(FIND_SERVERS_BUTTON_WIDTH, BUTTON_HEIGHT)
+        if (minescan$browseButton == null) {
+            minescan$browseButton = addRenderableWidget(
+                new Button.Builder(Component.literal("MineScan"), button -> minescan$openBrowser())
+                    .size(MINESCAN_BUTTON_WIDTH, BUTTON_HEIGHT)
                     .build()
             );
         }
 
         int y = this.height - MARGIN - BUTTON_HEIGHT;
-        mcff$apiKeyButton.setPosition(MARGIN, y);
-        mcff$findServersButton.setPosition(MARGIN + API_KEY_BUTTON_WIDTH + BUTTON_GAP, y);
+        minescan$apiKeyButton.setPosition(MARGIN, y);
+        minescan$browseButton.setPosition(MARGIN + API_KEY_BUTTON_WIDTH + BUTTON_GAP, y);
     }
 
     @Unique
-    private void mcff$openApiKeySetup(JoinMultiplayerScreen parent) {
+    private void minescan$openApiKeySetup(JoinMultiplayerScreen parent) {
         ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
         this.minecraft.setScreen(new ApiKeySetupScreen(GuiThemes.get(), module, parent));
     }
 
     @Unique
-    private void mcff$openServerFinder() {
+    private void minescan$openBrowser() {
         ServerFinderModule module = Modules.get().get(ServerFinderModule.class);
         this.minecraft.setScreen(new ServerFinderScreen(GuiThemes.get(), module));
     }

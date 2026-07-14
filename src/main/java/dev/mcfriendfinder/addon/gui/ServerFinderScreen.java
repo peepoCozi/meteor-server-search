@@ -57,7 +57,7 @@ public class ServerFinderScreen extends WindowScreen {
     private boolean loading = false;
 
     public ServerFinderScreen(GuiTheme theme, ServerFinderModule module) {
-        super(theme, "Server Finder");
+        super(theme, "MineScan");
         this.module = module;
     }
 
@@ -89,7 +89,7 @@ public class ServerFinderScreen extends WindowScreen {
         if (module.selfHostedScanner.get() && module.apiBaseUrl.get().isBlank()) {
             add(theme.label("Self-Hosted Scanner is on, but API Base URL is empty."))
                 .expandX();
-            add(theme.label("(Set it in the Server Finder module settings, or turn Self-Hosted Scanner off.)"))
+            add(theme.label("(Set it in the MineScan module settings, or turn Self-Hosted Scanner off.)"))
                 .expandX();
             return;
         }
@@ -114,7 +114,7 @@ public class ServerFinderScreen extends WindowScreen {
         // Second row: the remaining filters that were previously only
         // reachable from the module's own settings screen, so this screen
         // (whether opened from the module widget or the multiplayer menu's
-        // "Find Servers" button) has the same filter access either way.
+        // MineScan button) has the same filter access either way.
         WHorizontalList moreControls = add(theme.horizontalList()).expandX().widget();
 
         moreControls.add(theme.label("Version:"));
