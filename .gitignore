@@ -23,7 +23,7 @@ classes/
 bin/
 .classpath
 .project
-
+.cursor/
 # macos
 
 *.DS_Store
